@@ -42,7 +42,7 @@
         "Name":"PC Casa",
         "User":{
             "Email":"usuario01@pysync.com",
-            "Password":"D1A5FF8DBEEDAA3406368724EBBD3CB0"
+            "Password":"D1A5FF8DBEEDAA3406368724EBBD3CB0" //Hash MD5 da Senha
         }
     }
 }
@@ -71,12 +71,12 @@
         "Key":"6C19A781148814833ED25840B7A07BA7",
         "User":{
             "Email":"usuario01@pysync.com",
-            "Password":"D1A5FF8DBEEDAA3406368724EBBD3CB0"
+            "Password":"D1A5FF8DBEEDAA3406368724EBBD3CB0" //Hash MD5 da Senha
         }
     },
     "File":{
         "OriginalName":"Arquivo01.txt",
-        "Size":"32253"
+        "Size":"32253" //Tamanho, em bytes, do arquivo
     }
 }
 ```
@@ -109,12 +109,12 @@
         "Key":"6C19A781148814833ED25840B7A07BA7",
         "User":{
             "Email":"usuario01@pysync.com",
-            "Password":"D1A5FF8DBEEDAA3406368724EBBD3CB0"
+            "Password":"D1A5FF8DBEEDAA3406368724EBBD3CB0" //Hash MD5 da Senha
         }
     },
     "File":{
         "Name":"BBE02F946D5455D74616FC9777557C22",
-        "Size":"32253"
+        "Size":"32253" //Tamanho, em bytes, do arquivo
     }
 }
 ```
@@ -152,7 +152,7 @@
         "Key":"6C19A781148814833ED25840B7A07BA7",
         "User":{
             "Email":"usuario01@pysync.com",
-            "Password":"D1A5FF8DBEEDAA3406368724EBBD3CB0"
+            "Password":"D1A5FF8DBEEDAA3406368724EBBD3CB0" //Hash MD5 da Senha
         }
     },
     "File":"BBE02F946D5455D74616FC9777557C22"  
