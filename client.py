@@ -4,38 +4,29 @@ HOST, PORT = "localhost", 9999
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 def update(status, file):
-  #data_set = {}
+  data = {
+    "Action": status, 
+    "Agent": {
+      "Key": "placeholder",
+      "User": {
+        "Email": "place@holder.it",
+        "Password": "pass"
+      }
+    },
+  }
+
   if status == "Create":
-    data = {
-      "Action": status, 
-      "Agent": {
-        "Key": "placeholder",
-        "User": {
-          "Email": "place@holder.it",
-          "Password": "pass"
-        }
-      },
+    data.update({
       "File": {
         "OriginalName": file[0],
         "Size": os.stat(file[0]).st_size
-      }
-    }
-    #data_set = json.dumps(data)
-  if status == "Delete":
-    data = {
-      "Action": status, 
-      "Agent": {
-        "Key": "placeholder",
-        "User": {
-          "Email": "place@holder.it",
-          "Password": "pass"
-        }
       },
+    })
+  if status == "Delete":
+    data.update({
       "File": file[0]
-    }
-    #data_set = json.dumps(data)
+    })
   print(data)
-
 
 def watch_dir(path_to_watch):
   before = dict ([(f, None) for f in os.listdir (path_to_watch)])
