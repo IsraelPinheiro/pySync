@@ -15,6 +15,9 @@ def update(status, file):
     },
   }
 
+  # this delay is needed to the algorithm can get the file size
+  time.sleep(0.2)
+
   if status == "Create":
     data.update({
       "File": {
