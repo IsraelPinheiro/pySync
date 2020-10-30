@@ -1,7 +1,22 @@
-import os, time, socket, json
+import os, time, socket, json, threading
 
 HOST, PORT = "localhost", 9999
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+def send_to_server(data):
+  data_set = json.dumps(data)
+  try:
+    sock.connect((HOST, PORT))
+    sock.sendall(bytes(data_set,encoding="utf-8"))
+
+    response = sock.recv(1024)
+    response = response.decode("utf-8")
+
+    if response["Status"] != 200:
+      print("Server error")
+
+  finally:
+    sock.close()
 
 def update(status, file):
   data = {
@@ -29,7 +44,8 @@ def update(status, file):
     data.update({
       "File": file[0]
     })
-  print(data)
+
+  threading.Thread(target=send_to_server,args=(data,)).start()
 
 def watch_dir(path_to_watch):
   before = dict ([(f, None) for f in os.listdir (path_to_watch)])
