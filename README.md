@@ -23,7 +23,7 @@
 {
     "Action":"ServerResponse",
     "Timestamp":1604061231.0383,
-    "Status":200 //OK - User registered
+    "Status":200 //OK - User Registered
 },
 {
     "Action":"ServerResponse",
@@ -61,7 +61,7 @@
 {
     "Action":"ServerResponse",
     "Timestamp":1604061231.0383,
-    "Status":200 //OK - User registered
+    "Status":200 //OK - Agent Registered
 }
 
 {
@@ -99,7 +99,7 @@
 {
     "Action":"ServerResponse",
     "Timestamp":1604061231.0383,
-    "Status":200 //OK - User registered
+    "Status":200 //OK - File Created
 },
 {
     "Action":"ServerResponse",
@@ -146,7 +146,7 @@
 {
     "Action":"ServerResponse",
     "Timestamp":1604061231.0383,
-    "Status":200 //OK - User registered
+    "Status":200 //OK - File Updated
 }
 {
     "Action":"ServerResponse",
@@ -195,7 +195,7 @@
 {
     "Action":"ServerResponse",
     "Timestamp":1604061231.0383,
-    "Status":200 //OK - User registered
+    "Status":200 //OK - File Deleted
 },
 {
     "Action":"ServerResponse",
@@ -216,5 +216,75 @@
     "Action":"ServerResponse",
     "Timestamp":1604061231.0383,
     "Status":404 //Not Found - Arquivo não localizado
+}
+```
+
+### Get Remote Changes
+
+- Client Request
+
+```jsonc
+{
+    "Action":"GetChanges",
+    "Timestamp":1604061231.0383,
+    "Agent":{
+        "Key":"6C19A781148814833ED25840B7A07BA7",
+        "User":{
+            "Email":"usuario01@pysync.com",
+            "Password":"D1A5FF8DBEEDAA3406368724EBBD3CB0" //Password MD5 Hash
+        }
+    }
+}
+```
+
+- Possible Server Responses
+
+```jsonc
+{
+    "Action":"ServerResponse",
+    "Timestamp":1604061231.0383,
+    "Status":200, //OK
+    "Changes":{
+        "Created":[
+            {
+                "OriginalName":"Arquivo01.txt",
+                "Size":"32253" //Size, in bytes, of the file
+            },
+            {
+                "OriginalName":"Arquivo02.txt",
+                "Size":"32253" //Size, in bytes, of the file
+            }
+        ],
+        "Updated":[
+            {
+                "OriginalName":"Arquivo03.txt",
+                "Size":"32253" //Size, in bytes, of the file
+            },
+            {
+                "OriginalName":"Arquivo04.txt",
+                "Size":"32253" //Size, in bytes, of the file
+            }
+        ],
+        "Deleted":[
+            {
+                "OriginalName":"Arquivo05.txt",
+                "Size":"32253" //Size, in bytes, of the file
+            },
+            {
+                "OriginalName":"Arquivo06.txt",
+                "Size":"32253" //Size, in bytes, of the file
+            }
+        ]
+    }
+},
+{
+    "Action":"ServerResponse",
+    "Timestamp":1604061231.0383,
+    "Status":400 //Bad Request - Outside the expected format for the type of action
+},
+{
+    "Action":"ServerResponse",
+    "Timestamp":1604061231.0383,
+    "Status":403 //Denied - Unauthorized User or Agent
 }
 ```
