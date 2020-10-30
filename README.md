@@ -9,6 +9,7 @@
 ```jsonc
 {
     "Action":"RegisterUser",
+    "Timestamp":1604061231.0383,
     "User":{
         "Email":"usuario01@pysync.com",
         "Password":"minhasenhasuperdificil"
@@ -21,14 +22,17 @@
 ```jsonc
 {
     "Action":"ServerResponse",
+    "Timestamp":1604061231.0383,
     "Status":200 //OK - User registered
 },
 {
     "Action":"ServerResponse",
+    "Timestamp":1604061231.0383,
     "Status":400 //Bad Request - Fora do padrão esperado para o tipo de ação
 },
 {
     "Action":"ServerResponse",
+    "Timestamp":1604061231.0383,
     "Status":403 //Denied - Email Já cadastrado
 }
 ```
@@ -40,6 +44,7 @@
 ```jsonc
 {
     "Action":"RegisterAgent",
+    "Timestamp":1604061231.0383,
     "Agent":{
         "Name":"PC Casa",
         "User":{
@@ -55,11 +60,13 @@
 ```jsonc
 {
     "Action":"ServerResponse",
+    "Timestamp":1604061231.0383,
     "Status":200 //OK - User registered
 }
 
 {
     "Action":"ServerResponse",
+    "Timestamp":1604061231.0383,
     "Status":400 //Bad Request - Fora do padrão esperado para o tipo de ação
 }
 ```
@@ -71,6 +78,7 @@
 ```jsonc
 {
     "Action":"Create",
+    "Timestamp":1604061231.0383,
     "Agent":{
         "Key":"6C19A781148814833ED25840B7A07BA7",
         "User":{
@@ -90,18 +98,22 @@
 ```jsonc
 {
     "Action":"ServerResponse",
+    "Timestamp":1604061231.0383,
     "Status":200 //OK - User registered
 },
 {
     "Action":"ServerResponse",
+    "Timestamp":1604061231.0383,
     "Status":100 //Continue - Servidor aguardando envio do arquivo
 },
 {
     "Action":"ServerResponse",
+    "Timestamp":1604061231.0383,
     "Status":400 //Bad Request - Fora do padrão esperado para o tipo de ação
 },
 {
     "Action":"ServerResponse",
+    "Timestamp":1604061231.0383,
     "Status":403 //Denied - User ou Agent não autorizado
 }
 ```
@@ -113,6 +125,7 @@
 ```jsonc
 {
     "Action":"Update",
+    "Timestamp":1604061231.0383,
     "Agent":{
         "Key":"6C19A781148814833ED25840B7A07BA7",
         "User":{
@@ -132,22 +145,27 @@
 ```jsonc
 {
     "Action":"ServerResponse",
+    "Timestamp":1604061231.0383,
     "Status":200 //OK - User registered
 }
 {
     "Action":"ServerResponse",
+    "Timestamp":1604061231.0383,
     "Status":100 //Continue - Servidor aguardando envio do arquivo
 },
 {
     "Action":"ServerResponse",
+    "Timestamp":1604061231.0383,
     "Status":400 //Bad Request - Fora do padrão esperado para o tipo de ação
 },
 {
     "Action":"ServerResponse",
+    "Timestamp":1604061231.0383,
     "Status":403 //Denied - User ou Agent não autorizado
 },
 {
     "Action":"ServerResponse",
+    "Timestamp":1604061231.0383,
     "Status":404 //Not Found - Arquivo não localizado
 }
 ```
@@ -159,6 +177,7 @@
 ```jsonc
 {
     "Action":"Delete",
+    "Timestamp":1604061231.0383,
     "Agent":{
         "Key":"6C19A781148814833ED25840B7A07BA7",
         "User":{
@@ -175,22 +194,27 @@
 ```jsonc
 {
     "Action":"ServerResponse",
+    "Timestamp":1604061231.0383,
     "Status":200 //OK - User registered
 },
 {
     "Action":"ServerResponse",
+    "Timestamp":1604061231.0383,
     "Status":100 //Continue - Servidor aguardando envio do arquivo
 },
 {
     "Action":"ServerResponse",
+    "Timestamp":1604061231.0383,
     "Status":400 //Bad Request - Fora do padrão esperado para o tipo de ação
 },
 {
     "Action":"ServerResponse",
+    "Timestamp":1604061231.0383,
     "Status":403 //Denied - User ou Agent não autorizado
 },
 {
     "Action":"ServerResponse",
+    "Timestamp":1604061231.0383,
     "Status":404 //Not Found - Arquivo não localizado
 }
 ```
