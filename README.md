@@ -28,12 +28,12 @@
 {
     "Action":"ServerResponse",
     "Timestamp":1604061231.0383,
-    "Status":400 //Bad Request - Fora do padrão esperado para o tipo de ação
+    "Status":400 //Bad Request - Outside the expected format for the type of action
 },
 {
     "Action":"ServerResponse",
     "Timestamp":1604061231.0383,
-    "Status":403 //Denied - Email Já cadastrado
+    "Status":403 //Denied - E-mail already registered
 }
 ```
 
@@ -49,7 +49,7 @@
         "Name":"PC Casa",
         "User":{
             "Email":"usuario01@pysync.com",
-            "Password":"D1A5FF8DBEEDAA3406368724EBBD3CB0" //Hash MD5 da Senha
+            "Password":"D1A5FF8DBEEDAA3406368724EBBD3CB0" //Password MD5 Hash
         }
     }
 }
@@ -67,7 +67,7 @@
 {
     "Action":"ServerResponse",
     "Timestamp":1604061231.0383,
-    "Status":400 //Bad Request - Fora do padrão esperado para o tipo de ação
+    "Status":400 //Bad Request - Outside the expected format for the type of action
 }
 ```
 
@@ -83,12 +83,12 @@
         "Key":"6C19A781148814833ED25840B7A07BA7",
         "User":{
             "Email":"usuario01@pysync.com",
-            "Password":"D1A5FF8DBEEDAA3406368724EBBD3CB0" //Hash MD5 da Senha
+            "Password":"D1A5FF8DBEEDAA3406368724EBBD3CB0" //Password MD5 Hash
         }
     },
     "File":{
         "OriginalName":"Arquivo01.txt",
-        "Size":"32253" //Tamanho, em bytes, do arquivo
+        "Size":"32253" //Size, in bytes, of the file
     }
 }
 ```
@@ -104,17 +104,17 @@
 {
     "Action":"ServerResponse",
     "Timestamp":1604061231.0383,
-    "Status":100 //Continue - Servidor aguardando envio do arquivo
+    "Status":100 //Continue - Server ready to receive the file
 },
 {
     "Action":"ServerResponse",
     "Timestamp":1604061231.0383,
-    "Status":400 //Bad Request - Fora do padrão esperado para o tipo de ação
+    "Status":400 //Bad Request - Outside the expected format for the type of action
 },
 {
     "Action":"ServerResponse",
     "Timestamp":1604061231.0383,
-    "Status":403 //Denied - User ou Agent não autorizado
+    "Status":403 //Denied - Unauthorized User or Agent
 }
 ```
 
@@ -130,12 +130,12 @@
         "Key":"6C19A781148814833ED25840B7A07BA7",
         "User":{
             "Email":"usuario01@pysync.com",
-            "Password":"D1A5FF8DBEEDAA3406368724EBBD3CB0" //Hash MD5 da Senha
+            "Password":"D1A5FF8DBEEDAA3406368724EBBD3CB0" //Password MD5 Hash
         }
     },
     "File":{
         "Name":"BBE02F946D5455D74616FC9777557C22",
-        "Size":"32253" //Tamanho, em bytes, do arquivo
+        "Size":"32253" //Size, in bytes, of the file
     }
 }
 ```
@@ -151,17 +151,17 @@
 {
     "Action":"ServerResponse",
     "Timestamp":1604061231.0383,
-    "Status":100 //Continue - Servidor aguardando envio do arquivo
+    "Status":100 //Continue - Server ready to receive the file
 },
 {
     "Action":"ServerResponse",
     "Timestamp":1604061231.0383,
-    "Status":400 //Bad Request - Fora do padrão esperado para o tipo de ação
+    "Status":400 //Bad Request - Outside the expected format for the type of action
 },
 {
     "Action":"ServerResponse",
     "Timestamp":1604061231.0383,
-    "Status":403 //Denied - User ou Agent não autorizado
+    "Status":403 //Denied - Unauthorized User or Agent
 },
 {
     "Action":"ServerResponse",
@@ -182,7 +182,7 @@
         "Key":"6C19A781148814833ED25840B7A07BA7",
         "User":{
             "Email":"usuario01@pysync.com",
-            "Password":"D1A5FF8DBEEDAA3406368724EBBD3CB0" //Hash MD5 da Senha
+            "Password":"D1A5FF8DBEEDAA3406368724EBBD3CB0" //Password MD5 Hash
         }
     },
     "File":"BBE02F946D5455D74616FC9777557C22"  
@@ -200,17 +200,17 @@
 {
     "Action":"ServerResponse",
     "Timestamp":1604061231.0383,
-    "Status":100 //Continue - Servidor aguardando envio do arquivo
+    "Status":100 //Continue - Server ready to receive the file
 },
 {
     "Action":"ServerResponse",
     "Timestamp":1604061231.0383,
-    "Status":400 //Bad Request - Fora do padrão esperado para o tipo de ação
+    "Status":400 //Bad Request - Outside the expected format for the type of action
 },
 {
     "Action":"ServerResponse",
     "Timestamp":1604061231.0383,
-    "Status":403 //Denied - User ou Agent não autorizado
+    "Status":403 //Denied - Unauthorized User or Agent
 },
 {
     "Action":"ServerResponse",
