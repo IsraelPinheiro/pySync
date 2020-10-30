@@ -1,12 +1,12 @@
 # PySync
 
-
-
 ## Message Transfer Protocol
 
 ### Register User
+
 - Client Request
-```
+
+```jsonc
 {
     "Action":"RegisterUser",
     "User":{
@@ -16,9 +16,9 @@
 }
 ```
 
--  Possible Server Responses
+- Possible Server Responses
 
-```
+```jsonc
 {
     "Action":"ServerResponse",
     "Status":200 //OK - User registered
@@ -34,8 +34,10 @@
 ```
 
 ### Register Agent
+
 - Client Request
-```
+
+```jsonc
 {
     "Action":"RegisterAgent",
     "Agent":{
@@ -48,9 +50,9 @@
 }
 ```
 
--  Possible Server Responses
+- Possible Server Responses
 
-```
+```jsonc
 {
     "Action":"ServerResponse",
     "Status":200 //OK - User registered
@@ -63,8 +65,10 @@
 ```
 
 ### New File
+
 - Client Request
-```
+
+```jsonc
 {
     "Action":"Create",
     "Agent":{
@@ -80,8 +84,10 @@
     }
 }
 ```
--  Possible Server Responses
-```
+
+- Possible Server Responses
+
+```jsonc
 {
     "Action":"ServerResponse",
     "Status":200 //OK - User registered
@@ -101,8 +107,10 @@
 ```
 
 ### Update File
+
 - Client Request
-```
+
+```jsonc
 {
     "Action":"Update",
     "Agent":{
@@ -119,8 +127,9 @@
 }
 ```
 
--  Possible Server Responses
-```
+- Possible Server Responses
+
+```jsonc
 {
     "Action":"ServerResponse",
     "Status":200 //OK - User registered
@@ -144,8 +153,10 @@
 ```
 
 ### Delete File
+
 - Client Request
-```
+
+```jsonc
 {
     "Action":"Delete",
     "Agent":{
@@ -159,8 +170,9 @@
 }
 ```
 
--  Possible Server Responses
-```
+- Possible Server Responses
+
+```jsonc
 {
     "Action":"ServerResponse",
     "Status":200 //OK - User registered
