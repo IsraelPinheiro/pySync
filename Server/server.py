@@ -42,24 +42,62 @@ def getChanges(message):
     return (message, None)
 
 def update(message, payload):
-    with open("Server/filename.txt", "wb") as handle:
-        handle.write(payload.data)
+    if message["File"]:
+        if os.path.isfile(message["File"]):
+            os.remove("Files/"+message["File"])
+            with open("Files/"+message["File"], "wb") as handle:
+                handle.write(payload.data)
+            message = {
+                "Action":"ServerResponse",
+                "Timestamp":time.time(),
+                "Status":200
+            }
 
-    message = {
-        "Action":"ServerResponse",
-        "Timestamp":time.time(),
-        "Status":200
-    }
+        else:
+            message = {
+                "Action":"ServerResponse",
+                "Timestamp":time.time(),
+                "Status":404
+            }
+    else:
+        message = {
+            "Action":"ServerResponse",
+            "Timestamp":time.time(),
+            "Status":400
+        }
 
     return (message, None)
 
 def create(message, payload):
+    if message["File"]:
+        if not os.path.isfile(message["File"]):
+            with open("Files"+message["File"], "wb") as handle:
+                handle.write(payload.data)
+            message = {
+                "Action":"ServerResponse",
+                "Timestamp":time.time(),
+                "Status":200
+            }
+
+        else:
+            message = {
+                "Action":"ServerResponse",
+                "Timestamp":time.time(),
+                "Status":400
+            }
+    else:
+        message = {
+            "Action":"ServerResponse",
+            "Timestamp":time.time(),
+            "Status":400
+        }
+
     return (message, None)
 
 def delete(message):
     if message["File"]:
-        if os.path.isfile(message["File"]):
-            os.remove(message["File"])
+        if os.path.isfile("Files/"+message["File"]):
+            os.remove("Files/"+message["File"])
             message = {
                 "Action":"ServerResponse",
                 "Timestamp":time.time(),
