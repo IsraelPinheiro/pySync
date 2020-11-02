@@ -57,6 +57,28 @@ def create(message, payload):
     return (message, None)
 
 def delete(message):
+    if message["File"]:
+        if os.path.isfile(message["File"]):
+            os.remove(message["File"])
+            message = {
+                "Action":"ServerResponse",
+                "Timestamp":time.time(),
+                "Status":200
+            }
+
+        else:
+            message = {
+                "Action":"ServerResponse",
+                "Timestamp":time.time(),
+                "Status":404
+            }
+    else:
+        message = {
+            "Action":"ServerResponse",
+            "Timestamp":time.time(),
+            "Status":400
+        }
+
     return (message, None)
 
 def registerAgent(message):
