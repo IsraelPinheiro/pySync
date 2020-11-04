@@ -7,7 +7,7 @@ server = SimpleXMLRPCServer(("",3000), logRequests=True, allow_none=True)
 class Worker(object):
     pass
 
-def gateway(message, payload=None):
+def gateway(message, payload):
     action = message["Action"]
     if action=="GetChanges":
         return getChanges(message)
@@ -70,8 +70,8 @@ def update(message, payload):
 
 def create(message, payload):
     if message["File"]:
-        if not os.path.isfile(message["File"]):
-            with open("Files"+message["File"], "wb") as handle:
+        if not os.path.isfile(message["File"]["OriginalName"]):
+            with open("./Files/"+message["File"]["OriginalName"], "wb") as handle:
                 handle.write(payload.data)
             message = {
                 "Action":"ServerResponse",
