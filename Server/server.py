@@ -7,7 +7,7 @@ server = SimpleXMLRPCServer(("",3000), logRequests=True, allow_none=True)
 class Worker(object):
     pass
 
-def gateway(message, payload=None):
+def gateway(message, payload):
     action = message["Action"]
     if action=="GetChanges":
         return getChanges(message)
@@ -41,11 +41,11 @@ def gateway(message, payload=None):
 def getChanges(message):
     return (message, None)
 
-def update(message, payload):
+def update(message, payload=None):
     if message["File"]:
         if os.path.isfile(message["File"]["OriginalName"]):
-            os.remove("Files/"+message["File"]["OriginalName"])
-            with open("Files/"+message["File"]["OriginalName"], "wb") as handle:
+            os.remove("./Files/"+message["File"]["OriginalName"])
+            with open("./Files/"+message["File"]["OriginalName"], "wb") as handle:
                 handle.write(payload.data)
             message = {
                 "Action":"ServerResponse",
@@ -71,7 +71,7 @@ def update(message, payload):
 def create(message, payload):
     if message["File"]:
         if not os.path.isfile(message["File"]["OriginalName"]):
-            with open("Files"+message["File"]["OriginalName"], "wb") as handle:
+            with open("./Files/"+message["File"]["OriginalName"], "wb") as handle:
                 handle.write(payload.data)
             message = {
                 "Action":"ServerResponse",
@@ -96,8 +96,8 @@ def create(message, payload):
 
 def delete(message):
     if message["File"]:
-        if os.path.isfile("Files/"+message["File"]["OriginalName"]):
-            os.remove("Files/"+message["File"]["OriginalName"])
+        if os.path.isfile("./Files/"+message["File"]["OriginalName"]):
+            os.remove("./Files/"+message["File"]["OriginalName"])
             message = {
                 "Action":"ServerResponse",
                 "Timestamp":time.time(),
