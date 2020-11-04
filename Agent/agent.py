@@ -47,7 +47,22 @@ class EventHandler(FileSystemEventHandler):
         print(awnser)
         
     def on_deleted(self, event):
-        print("Arquivo Excluído - "+event.src_path)
+        message = {
+            "Action":"Delete",
+            "Timestamp":1604061231.0383,
+            "Agent":{
+                "Key":"6C19A781148814833ED25840B7A07BA7",
+                "User":{
+                    "Email":"usuario01@pysync.com",
+                    "Password":"D1A5FF8DBEEDAA3406368724EBBD3CB0"
+                }
+            },
+            "File": os.path.basename(event.src_path)
+
+        }
+
+        awnser = proxy.gateway(message, None)
+        print(awnser)
 
     def on_modified(self, event):
         print("Arquivo Modificado - "+event.src_path)
@@ -59,7 +74,7 @@ class EventHandler(FileSystemEventHandler):
         pass
 
 if __name__ == "__main__":
-    proxy = ServerProxy('http://localhost:3000')
+    proxy = ServerProxy('http://localhost:3000', allow_none=True)
     #TODO Separar Thread do Watcher
     #TODO Disparar thread com 
     watcher = Watcher()

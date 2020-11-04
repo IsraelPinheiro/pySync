@@ -41,7 +41,7 @@ def gateway(message, payload):
 def getChanges(message):
     return (message, None)
 
-def update(message, payload):
+def update(message, payload=None):
     if message["File"]:
         if os.path.isfile(message["File"]):
             os.remove("Files/"+message["File"])
