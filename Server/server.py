@@ -43,9 +43,9 @@ def getChanges(message):
 
 def update(message, payload=None):
     if message["File"]:
-        if os.path.isfile(message["File"]):
-            os.remove("./Files/"+message["File"])
-            with open("./Files/"+message["File"], "wb") as handle:
+        if os.path.isfile(message["File"]["OriginalName"]):
+            os.remove("./Files/"+message["File"]["OriginalName"])
+            with open("./Files/"+message["File"]["OriginalName"], "wb") as handle:
                 handle.write(payload.data)
             message = {
                 "Action":"ServerResponse",
@@ -96,8 +96,8 @@ def create(message, payload):
 
 def delete(message):
     if message["File"]:
-        if os.path.isfile("Files/"+message["File"]):
-            os.remove("Files/"+message["File"])
+        if os.path.isfile("./Files/"+message["File"]["OriginalName"]):
+            os.remove("./Files/"+message["File"]["OriginalName"])
             message = {
                 "Action":"ServerResponse",
                 "Timestamp":time.time(),
