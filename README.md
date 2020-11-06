@@ -1,5 +1,8 @@
 # PySync
 
+## Oficial Repository
+[PySync](https://github.com/IsraelPinheiro/pySync)
+
 ## Equipe
 
 - Israel Pinheiro
