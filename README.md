@@ -1,5 +1,11 @@
 # PySync
 
+## Equipe
+
+- Israel Pinheiro
+- Ricassio Costa
+- Lucas Gomes
+
 ## Message Transfer Protocol
 
 ### Register User
