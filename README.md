@@ -127,6 +127,51 @@
 }
 ```
 
+### Open File
+
+- Client Request
+
+```jsonc
+{
+    "Action":"Open",
+    "Timestamp":1604061231.0383,
+    "Agent":{
+        "Key":"6C19A781148814833ED25840B7A07BA7",
+        "User":{
+            "Email":"usuario01@pysync.com",
+            "Password":"D1A5FF8DBEEDAA3406368724EBBD3CB0" //Password MD5 Hash
+        }
+    },
+    "File":{
+        "Name":"Arquivo01.txt"
+    }
+}
+```
+- Possible Server Responses
+
+```jsonc
+{
+    "Action":"ServerResponse",
+    "Timestamp":1604061231.0383,
+    "Status":200 //OK - File Created
+},
+{
+    "Action":"ServerResponse",
+    "Timestamp":1604061231.0383,
+    "Status":400 //Bad Request - Outside the expected format for the type of action
+},
+{
+    "Action":"ServerResponse",
+    "Timestamp":1604061231.0383,
+    "Status":403 //Denied - Unauthorized User or Agent
+},
+{
+    "Action":"ServerResponse",
+    "Timestamp":1604061231.0383,
+    "Status":404 //not Found - File not found
+}
+```
+
 ### Update File
 
 - Client Request
