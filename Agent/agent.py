@@ -1,8 +1,25 @@
 from xmlrpc.client import ServerProxy, Binary
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
-import time, os, json
+import time, os, json, threading, argparse, hashlib, sqlite3
  
+################ Argparser ################
+parser = argparse.ArgumentParser()
+parser.parse_args()
+
+parser.add_argument("username", help="Your Username", type=str)
+parser.add_argument("password", help="User Password", type=str)
+parser.add_argument("--key", help="Agent Key", type=str, default="5EE53A0D21960A1918E3CFC9F1D9356A")
+args = parser.parse_args()
+
+USERNAME = args.username
+PASSWORD = hashlib.md5(args.password.encode())     
+AGENT_KEY = args.key
+
+print(USERNAME, PASSWORD, AGENT_KEY)
+
+###########################################
+
 class Watcher(object):
     def __init__(self):
         observer = Observer()
@@ -25,9 +42,9 @@ class EventHandler(FileSystemEventHandler):
         time.sleep(0.2)
         message = {
             "Action":"Create",
-            "Timestamp":1604061231.0383,
+            "Timestamp":time.time(),
             "Agent":{
-                "Key":"6C19A781148814833ED25840B7A07BA7",
+                "Key":AGENT_KEY,
                 "User":{
                     "Email":"usuario01@pysync.com",
                     "Password":"D1A5FF8DBEEDAA3406368724EBBD3CB0"
@@ -49,9 +66,9 @@ class EventHandler(FileSystemEventHandler):
     def on_deleted(self, event):
         message = {
             "Action":"Delete",
-            "Timestamp":1604061231.0383,
+            "Timestamp":time.time(),
             "Agent":{
-                "Key":"6C19A781148814833ED25840B7A07BA7",
+                "Key":AGENT_KEY,
                 "User":{
                     "Email":"usuario01@pysync.com",
                     "Password":"D1A5FF8DBEEDAA3406368724EBBD3CB0"
@@ -61,20 +78,58 @@ class EventHandler(FileSystemEventHandler):
 
         }
 
+        with open("dir_files.json", "r") as openfile:
+            data = json.load(openfile)
+        data.pop(os.path.basename(event.src_path))
+        with open("dir_files.json", "w") as outfile: 
+            json.dump(data, outfile)
+
         awnser = proxy.gateway(message, None)
         print(awnser)
 
     def on_modified(self, event):
-        print("Arquivo Modificado - "+event.src_path)
+        pass
             
     def on_moved(self, event):
-        print("Arquivo Movido - "+event.src_path)
+        pass
 
     def snapshot(self):
         pass
 
+def Watch_files():
+    with open("dir_files.json", "r") as openfile:
+        data = json.load(openfile)
+    while True:
+        time.sleep(1)
+        dir_files = dict ([(f, None) for f in os.listdir()])
+        for file in dir_files:
+            data.update({
+                file: os.stat(file).st_mtime
+            })
+            if os.stat(file).st_mtime > data[file] and "dir_files" not in file and "agent" not in file:
+                time.sleep(0.2)
+                
+                message = {
+                    "Action":"Delete",
+                    "Timestamp":time.time(),
+                    "Agent":{
+                        "Key":AGENT_KEY,
+                        "User":{
+                            "Email":"usuario01@pysync.com",
+                            "Password":"D1A5FF8DBEEDAA3406368724EBBD3CB0"
+                        }
+                    },
+                    "File": file
+
+                }
+
+                awnser = proxy.gateway(message, None)
+                print(awnser)
+
+            with open("dir_files.json", "w") as outfile: 
+                json.dump(data, outfile)
+
 if __name__ == "__main__":
     proxy = ServerProxy('http://localhost:3000', allow_none=True)
-    #TODO Separar Thread do Watcher
-    #TODO Disparar thread com 
-    watcher = Watcher()
+    threading.Thread(target=Watcher,args=()).start()
+    threading.Thread(target=Watch_files,args=()).start()
