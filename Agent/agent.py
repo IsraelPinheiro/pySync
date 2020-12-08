@@ -13,14 +13,12 @@ parser.add_argument("--key", help="Agent Key", type=str, default="5EE53A0D21960A
 args = parser.parse_args()
 
 USERNAME = args.username
-PASSWORD = hashlib.md5(args.password.encode())     
+PASSWORD = hashlib.md5(args.password.encode()).hexdigest()
 AGENT_KEY = args.key
 
-print(USERNAME, PASSWORD, AGENT_KEY)
+print(f"Acessando como {USERNAME} utilizando o agente {AGENT_KEY}")
 
 ###########################################
-
-FILES_PATH="./Files"
 
 class Watcher(object):
     def __init__(self):
@@ -132,11 +130,23 @@ def Watch_files():
                 json.dump(data, outfile)
 
 if __name__ == "__main__":
-    #Create files.json if not exists
-    if not os.path.exists("files.json"):
-        with open("files.json","w+") as f:
-            f.write("{}")
+    try:
+        #Create files.json if not exists
+        if not os.path.exists("files.json"):
+            with open("files.json","w+") as f:
+                f.write("{}")
 
-    proxy = ServerProxy('http://localhost:3000', allow_none=True)
-    threading.Thread(target=Watcher,args=()).start()
-    threading.Thread(target=Watch_files,args=()).start()
+        print("Connecting to remote server")
+        proxy = ServerProxy('http://localhost:3000', allow_none=True)
+
+        print("Initializing monitoring threads")
+        threadWatcher = threading.Thread(target=Watcher,args=()).start()
+        threadWatchFiles = threading.Thread(target=Watch_files,args=()).start()
+
+        print("Running...")
+
+    except (KeyboardInterrupt, SystemExit):
+        threadWatcher.join()
+        threadWatchFiles.join()
+        exit(0)
+        print('Exiting')
