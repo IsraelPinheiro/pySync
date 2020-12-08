@@ -2,7 +2,7 @@ from xmlrpc.server import SimpleXMLRPCServer
 from threading import Thread
 import sqlite3
 from sqlite3 import Error
-import os, json, time
+import os, json, time, hashlib
 
 server = SimpleXMLRPCServer(("",3000), logRequests=True, allow_none=True)
 
@@ -47,6 +47,7 @@ def connectDatabase():
 def checkUser(databaseConnection, user, password, key):
     if databaseConnection:
         cursor = databaseConnection.cursor()
+        password = hashlib.md5(password.encode()).hexdigest()
         cursor.execute(f'SELECT * FROM Agents WHERE user="{user}" and password="{password}" and agentKey = "{key}"')
         register = cursor.fetchone()
         if register:
@@ -99,28 +100,35 @@ def getChanges(message):
     return (message, None)
 
 def update(message, payload=None):
-    if message["File"]:
-        if os.path.isfile(message["File"]["OriginalName"]):
-            os.remove("./Files/"+message["File"]["OriginalName"])
-            with open("./Files/"+message["File"]["OriginalName"], "wb") as handle:
-                handle.write(payload.data)
-            message = {
-                "Action":"ServerResponse",
-                "Timestamp":time.time(),
-                "Status":200
-            }
+    if checkUser(connectDatabase(), message["User"]["Email"],message["User"]["Password"] ):    
+        if message["File"]:
+            if os.path.isfile(message["File"]["OriginalName"]):
+                os.remove("./Files/"+message["File"]["OriginalName"])
+                with open("./Files/"+message["File"]["OriginalName"], "wb") as handle:
+                    handle.write(payload.data)
+                message = {
+                    "Action":"ServerResponse",
+                    "Timestamp":time.time(),
+                    "Status":200
+                }
 
+            else:
+                message = {
+                    "Action":"ServerResponse",
+                    "Timestamp":time.time(),
+                    "Status":404
+                }
         else:
             message = {
                 "Action":"ServerResponse",
                 "Timestamp":time.time(),
-                "Status":404
+                "Status":400
             }
     else:
         message = {
             "Action":"ServerResponse",
             "Timestamp":time.time(),
-            "Status":400
+            "Status":401
         }
 
     return (message, None)
