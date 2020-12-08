@@ -7,7 +7,7 @@ import time, os, json, threading, argparse, hashlib, sqlite3
 parser = argparse.ArgumentParser()
 parser.parse_args()
 
-parser.add_argument("--username", help="Your Username", type=str, default="user")
+parser.add_argument("--username", help="Your Username", type=str, default="user@pysync.com")
 parser.add_argument("--password", help="User Password", type=str, default="password")
 parser.add_argument("--key", help="Agent Key", type=str, default="5EE53A0D21960A1918E3CFC9F1D9356A")
 args = parser.parse_args()
