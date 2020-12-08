@@ -1,8 +1,65 @@
 from xmlrpc.server import SimpleXMLRPCServer
 from threading import Thread
+import sqlite3
+from sqlite3 import Error
 import os, json, time
 
 server = SimpleXMLRPCServer(("",3000), logRequests=True, allow_none=True)
+
+################ SQLite Connection and management #####################
+def createDatabase():
+    try:
+        conn = sqlite3.connect("PySync.db")
+        cursor = conn.cursor()
+        cursor.execute("""
+            CREATE TABLE "Agents" (
+                "id" integer,
+                "user"	varchar NOT NULL,
+                "password"	varchar(32),
+                "agentKey"	varchar(32),
+                PRIMARY KEY("id")
+            );
+        """)
+        cursor.execute("""
+            INSERT INTO main.Agents ("user", "password", "agentKey")
+                VALUES ('User', '5F4DCC3B5AA765D61D8327DEB882CF99', '5EE53A0D21960A1918E3CFC9F1D9356A');
+        """)
+        conn.commit()
+
+    except Error as e:
+        print(e)
+    finally:
+        if conn:
+            conn.close()
+
+def connectDatabase():
+    if os.path.exists("PySync.db"):
+        conn = None
+        try:
+            conn = sqlite3.connect("PySync.db")
+        except Error as e:
+            print(e)
+        return conn
+    else:
+        createDatabase()
+        connectDatabase()
+
+def checkUser(databaseConnection, user, password, key):
+    if databaseConnection:
+        cursor = databaseConnection.cursor()
+        cursor.execute(f'SELECT * FROM Agents WHERE user="{user}" and password="{password}" and agentKey = "{key}"')
+        register = cursor.fetchone()
+        if register:
+            print("Usuário localizado")
+            databaseConnection.close()
+            return True
+        else:
+            databaseConnection.close()
+            return False
+    else:
+        return False
+
+#######################################################################
 
 class Worker(object):
     pass
