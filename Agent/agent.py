@@ -2,13 +2,13 @@ from xmlrpc.client import ServerProxy, Binary
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 import time, os, json, threading, argparse, hashlib, sqlite3
- 
+
 ################ Argparser ################
 parser = argparse.ArgumentParser()
 parser.parse_args()
 
-parser.add_argument("username", help="Your Username", type=str)
-parser.add_argument("password", help="User Password", type=str)
+parser.add_argument("--username", help="Your Username", type=str, default="user")
+parser.add_argument("--password", help="User Password", type=str, default="password")
 parser.add_argument("--key", help="Agent Key", type=str, default="5EE53A0D21960A1918E3CFC9F1D9356A")
 args = parser.parse_args()
 
@@ -19,6 +19,8 @@ AGENT_KEY = args.key
 print(USERNAME, PASSWORD, AGENT_KEY)
 
 ###########################################
+
+FILES_PATH="./Files"
 
 class Watcher(object):
     def __init__(self):
@@ -46,8 +48,8 @@ class EventHandler(FileSystemEventHandler):
             "Agent":{
                 "Key":AGENT_KEY,
                 "User":{
-                    "Email":"usuario01@pysync.com",
-                    "Password":"D1A5FF8DBEEDAA3406368724EBBD3CB0"
+                    "Email":USERNAME,
+                    "Password":PASSWORD
                 }
             },
             "File":{
@@ -70,18 +72,18 @@ class EventHandler(FileSystemEventHandler):
             "Agent":{
                 "Key":AGENT_KEY,
                 "User":{
-                    "Email":"usuario01@pysync.com",
-                    "Password":"D1A5FF8DBEEDAA3406368724EBBD3CB0"
+                    "Email":USERNAME,
+                    "Password":PASSWORD
                 }
             },
             "File": os.path.basename(event.src_path)
 
         }
 
-        with open("dir_files.json", "r") as openfile:
+        with open("files.json", "r") as openfile:
             data = json.load(openfile)
         data.pop(os.path.basename(event.src_path))
-        with open("dir_files.json", "w") as outfile: 
+        with open("files.json", "w") as outfile: 
             json.dump(data, outfile)
 
         awnser = proxy.gateway(message, None)
@@ -97,7 +99,7 @@ class EventHandler(FileSystemEventHandler):
         pass
 
 def Watch_files():
-    with open("dir_files.json", "r") as openfile:
+    with open("files.json", "r") as openfile:
         data = json.load(openfile)
     while True:
         time.sleep(1)
@@ -115,8 +117,8 @@ def Watch_files():
                     "Agent":{
                         "Key":AGENT_KEY,
                         "User":{
-                            "Email":"usuario01@pysync.com",
-                            "Password":"D1A5FF8DBEEDAA3406368724EBBD3CB0"
+                            "Email":USERNAME,
+                            "Password":PASSWORD
                         }
                     },
                     "File": file
@@ -126,10 +128,15 @@ def Watch_files():
                 awnser = proxy.gateway(message, None)
                 print(awnser)
 
-            with open("dir_files.json", "w") as outfile: 
+            with open("files.json", "w") as outfile: 
                 json.dump(data, outfile)
 
 if __name__ == "__main__":
+    #Create files.json if not exists
+    if not os.path.exists("files.json"):
+        with open("files.json","w+") as f:
+            f.write("{}")
+
     proxy = ServerProxy('http://localhost:3000', allow_none=True)
     threading.Thread(target=Watcher,args=()).start()
     threading.Thread(target=Watch_files,args=()).start()
