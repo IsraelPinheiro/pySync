@@ -12,7 +12,7 @@
 
 ## What is PySync?
 
-PySync is a file synchronization system written in python, as evaluative work for the Distributed Systems chair. The goal of the project was to develop a small file server, using different distributed development methodologies.
+PySync is a file synchronization system written in python, as evaluative work for the Distributed Systems course. The goal of the project was to develop a small file server, using different distributed development methodologies.
 
 ## Methodology
 
