@@ -140,8 +140,10 @@ if __name__ == "__main__":
         proxy = ServerProxy('http://localhost:3000', allow_none=True)
 
         print("Initializing monitoring threads")
-        threadWatcher = threading.Thread(target=Watcher,args=()).start()
-        threadWatchFiles = threading.Thread(target=Watch_files,args=()).start()
+        threadWatcher = threading.Thread(target=Watcher,args=())
+        threadWatcher.start()
+        threadWatchFiles = threading.Thread(target=Watch_files,args=())
+        threadWatchFiles.start()
 
         print("Running...")
 
