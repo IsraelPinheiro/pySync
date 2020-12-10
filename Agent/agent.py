@@ -5,18 +5,28 @@ import time, os, json, threading, argparse, hashlib, sqlite3
 
 ################ Argparser ################
 parser = argparse.ArgumentParser()
-parser.parse_args()
 
-parser.add_argument("--username", help="Your Username", type=str, default="user@pysync.com")
-parser.add_argument("--password", help="User Password", type=str, default="password")
-parser.add_argument("--key", help="Agent Key", type=str, default="5EE53A0D21960A1918E3CFC9F1D9356A")
+parser.add_argument("username", help="Your Username", type=str)
+parser.add_argument("password", help="User Password", type=str)
+parser.add_argument("--key", help="Agent Key", type=str)
 args = parser.parse_args()
 
 USERNAME = args.username
 PASSWORD = hashlib.md5(args.password.encode()).hexdigest()
-AGENT_KEY = args.key
 
-print(f"Acessando como {USERNAME} utilizando o agente {AGENT_KEY}")
+#Check Agent key and generate one if not exists
+if args.key:
+    AGENT_KEY = args.key.upper()
+else:
+    if os.path.isfile("agent.key"):
+        with open("agent.key") as f:
+            AGENT_KEY = f.readline()
+    else:
+        AGENT_KEY = hashlib.md5(str(time.time()).encode()).hexdigest().upper()
+        with open("agent.key","w+") as f:
+            f.write(AGENT_KEY)
+
+print(f"Accessing as {USERNAME} using agent {AGENT_KEY}")
 
 ###########################################
 
