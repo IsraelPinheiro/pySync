@@ -74,7 +74,7 @@ The following diagram abstracts the communication flow between the Agent and the
 - Possible Server Responses
 
 ```jsonc
-({
+{
   "Action": "ServerResponse",
   "Timestamp": 1604061231.0383,
   "Status": 200
@@ -88,7 +88,7 @@ The following diagram abstracts the communication flow between the Agent and the
   "Action": "ServerResponse",
   "Timestamp": 1604061231.0383,
   "Status": 403
-})
+}
 ```
 
 ### Register Agent
@@ -150,7 +150,7 @@ The following diagram abstracts the communication flow between the Agent and the
 - Possible Server Responses
 
 ```jsonc
-({
+{
   "Action": "ServerResponse",
   "Timestamp": 1604061231.0383,
   "Status": 200
@@ -169,7 +169,7 @@ The following diagram abstracts the communication flow between the Agent and the
   "Action": "ServerResponse",
   "Timestamp": 1604061231.0383,
   "Status": 403
-})
+}
 ```
 
 ### Open File
@@ -196,7 +196,7 @@ The following diagram abstracts the communication flow between the Agent and the
 - Possible Server Responses
 
 ```jsonc
-({
+{
   "Action": "ServerResponse",
   "Timestamp": 1604061231.0383,
   "Status": 200
@@ -215,7 +215,7 @@ The following diagram abstracts the communication flow between the Agent and the
   "Action": "ServerResponse",
   "Timestamp": 1604061231.0383,
   "Status": 404
-})
+}
 ```
 
 ### Update File
@@ -292,7 +292,7 @@ The following diagram abstracts the communication flow between the Agent and the
 - Possible Server Responses
 
 ```jsonc
-({
+{
   "Action": "ServerResponse",
   "Timestamp": 1604061231.0383,
   "Status": 200
@@ -316,7 +316,7 @@ The following diagram abstracts the communication flow between the Agent and the
   "Action": "ServerResponse",
   "Timestamp": 1604061231.0383,
   "Status": 404
-})
+}
 ```
 
 ### Get Remote Changes
@@ -340,7 +340,7 @@ The following diagram abstracts the communication flow between the Agent and the
 - Possible Server Responses
 
 ```jsonc
-({
+{
   "Action": "ServerResponse",
   "Timestamp": 1604061231.0383,
   "Status": 200,
@@ -386,5 +386,5 @@ The following diagram abstracts the communication flow between the Agent and the
   "Action": "ServerResponse",
   "Timestamp": 1604061231.0383,
   "Status": 403
-})
+}
 ```
