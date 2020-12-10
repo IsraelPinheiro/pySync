@@ -100,7 +100,7 @@ def getChanges(message):
     return (message, None)
 
 def update(message, payload=None):
-    if checkUser(connectDatabase(), message["User"]["Email"],message["User"]["Password"] ):    
+    if checkUser(connectDatabase(), message["Agent"]["User"]["Email"],message["Agent"]["User"]["Password"],message["Agent"]["Key"]):
         if message["File"]:
             if os.path.isfile(message["File"]["OriginalName"]):
                 os.remove("./Files/"+message["File"]["OriginalName"])
@@ -134,16 +134,23 @@ def update(message, payload=None):
     return (message, None)
 
 def create(message, payload):
-    if message["File"]:
-        if not os.path.isfile(message["File"]["OriginalName"]):
-            with open("./Files/"+message["File"]["OriginalName"], "wb") as handle:
-                handle.write(payload.data)
-            message = {
-                "Action":"ServerResponse",
-                "Timestamp":time.time(),
-                "Status":200
-            }
+    if checkUser(connectDatabase(), message["Agent"]["User"]["Email"],message["Agent"]["User"]["Password"],message["Agent"]["Key"]):
+        if message["File"]:
+            if not os.path.isfile(message["File"]["OriginalName"]):
+                with open("./Files/"+message["File"]["OriginalName"], "wb") as handle:
+                    handle.write(payload.data)
+                message = {
+                    "Action":"ServerResponse",
+                    "Timestamp":time.time(),
+                    "Status":200
+                }
 
+            else:
+                message = {
+                    "Action":"ServerResponse",
+                    "Timestamp":time.time(),
+                    "Status":400
+                }
         else:
             message = {
                 "Action":"ServerResponse",
@@ -154,32 +161,40 @@ def create(message, payload):
         message = {
             "Action":"ServerResponse",
             "Timestamp":time.time(),
-            "Status":400
+            "Status":401
         }
 
     return (message, None)
 
 def delete(message):
-    if message["File"]:
-        if os.path.isfile("./Files/"+message["File"]["OriginalName"]):
-            os.remove("./Files/"+message["File"]["OriginalName"])
-            message = {
-                "Action":"ServerResponse",
-                "Timestamp":time.time(),
-                "Status":200
-            }
+    if checkUser(connectDatabase(), message["Agent"]["User"]["Email"],message["Agent"]["User"]["Password"],message["Agent"]["Key"]):
+        if message["File"]:
+            if os.path.isfile("./Files/"+message["File"]["OriginalName"]):
+                os.remove("./Files/"+message["File"]["OriginalName"])
+                message = {
+                    "Action":"ServerResponse",
+                    "Timestamp":time.time(),
+                    "Status":200
+                }
 
+            else:
+                message = {
+                    "Action":"ServerResponse",
+                    "Timestamp":time.time(),
+                    "Status":404
+                }
         else:
             message = {
                 "Action":"ServerResponse",
                 "Timestamp":time.time(),
-                "Status":404
+                "Status":400
             }
+
     else:
         message = {
             "Action":"ServerResponse",
             "Timestamp":time.time(),
-            "Status":400
+            "Status":401
         }
 
     return (message, None)
