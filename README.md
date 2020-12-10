@@ -319,13 +319,13 @@ The following diagram abstracts the communication flow between the Agent and the
 }
 ```
 
-### Get Remote Changes
+### Synchronization with Remote Server
 
 - Client Request
 
 ```jsonc
 {
-  "Action": "GetChanges",
+  "Action": "Sync",
   "Timestamp": 1604061231.0383,
   "Agent": {
     "Key": "6C19A781148814833ED25840B7A07BA7",
