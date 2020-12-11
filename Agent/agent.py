@@ -151,20 +151,37 @@ def Watch_files():
 class cli(object):
     def __init__(self):
         self.flag = True
-        while self.run:
+        while self.flag:
             command = input("PySync: ")
             if command == "h" or command == "help":
+                print("#### PySync Help ####")
                 print("h, help - Show this help message")
-                print("x, exit - Exit PySync Agent")
+                print("k, key - Show this agent key")
+                print("lk, listkeys - List the keys registered for this user")
+                print("nk, newkey - Register a new Agent Key and set it as this agent default key")
+                print("nu, newuser - Register a new user and set it to use this agent default key")
+                print("sk, setkey - Set this agent default key")
+                print("uk, userkey - Register a new key pair for this user")
+                print("x, exit - Exit PySync Agent\n")
 
+            elif command == "k" or command == "key":
+                print(f"This Agent's key is {AGENT_KEY}")
+
+            elif command == "lk" or command == "listkeys":
+                pass
+            elif command == "nk" or command == "newkey":
+                pass
+            elif command == "nu" or command == "newuser":
+                pass
+            elif command == "sk" or command == "setkey":
+                command = input("New Key:")
+                
+
+            elif command == "uk" or command == "userkey":
+                pass
             elif command == "x" or command == "exit":
                 self.flag = False
-            
-        print("Exited While")
     
-    def run(self):
-        pass
-
 
 if __name__ == "__main__":
     
@@ -178,16 +195,14 @@ if __name__ == "__main__":
         proxy = ServerProxy('http://localhost:3000', allow_none=True)
 
         print("Initializing monitoring threads")
-        threadWatcher = threading.Thread(target=Watcher,args=())
-        threadWatcher.daemon = True
+        threadWatcher = threading.Thread(target=Watcher,args=(), daemon=True)
         threadWatcher.start()
-        threadWatchFiles = threading.Thread(target=Watch_files,args=())
-        threadWatchFiles.daemon = True
+        threadWatchFiles = threading.Thread(target=Watch_files,args=(), daemon=True)
         threadWatchFiles.start()
-        threadCLI = threading.Thread(target=cli,args=())
-        threadCLI.daemon = True
-        threadCLI.start()
         print("Running...")
+
+        threadCLI = threading.Thread(target=cli,args=(), daemon=True)
+        threadCLI.start()
 
         while True:
             pass
