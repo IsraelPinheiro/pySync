@@ -12,6 +12,7 @@ parser.add_argument("--key", help="Agent Key", type=str)
 parser.add_argument("--folder", help="Folder to watch", type=str, default="Files")
 args = parser.parse_args()
 
+# Set default username and password to use
 USERNAME = args.username
 PASSWORD = hashlib.md5(args.password.encode()).hexdigest()
 
@@ -29,6 +30,8 @@ else:
 
 print(f"Accessing as {USERNAME} using agent {AGENT_KEY}")
 
+
+# Set base file folder  path
 FILES_PATH = args.folder
 if not os.path.exists(FILES_PATH):
     os.mkdir(FILES_PATH)
