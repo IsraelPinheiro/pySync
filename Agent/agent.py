@@ -9,6 +9,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("username", help="Your Username", type=str)
 parser.add_argument("password", help="User Password", type=str)
 parser.add_argument("--key", help="Agent Key", type=str)
+parser.add_argument("--folder", help="Folder to watch", type=str, default="Files")
 args = parser.parse_args()
 
 USERNAME = args.username
@@ -28,8 +29,11 @@ else:
 
 print(f"Accessing as {USERNAME} using agent {AGENT_KEY}")
 
-###########################################
+FILES_PATH = args.folder
+if not os.path.exists(FILES_PATH):
+    os.mkdir(FILES_PATH)
 
+###########################################
 class Watcher(object):
     def __init__(self):
         observer = Observer()
