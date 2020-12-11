@@ -41,7 +41,7 @@ class Watcher(object):
     def __init__(self):
         observer = Observer()
         event_handler = EventHandler()
-        path = "."
+        path = FILES_PATH
         observer.schedule(event_handler, path, recursive=True)
         observer.start()
         try:
@@ -53,6 +53,7 @@ class Watcher(object):
 
 class EventHandler(FileSystemEventHandler):
     def on_any_event(self, event):
+        print("triggered")
         self.snapshot()
 
     def on_created(self, event):
@@ -119,6 +120,7 @@ def Watch_files():
     while True:
         time.sleep(1)
         dir_files = dict ([(f, None) for f in os.listdir()])
+
         for file in dir_files:
             data.update({
                 file: os.stat(file).st_mtime
@@ -146,7 +148,26 @@ def Watch_files():
             with open("files.json", "w") as outfile: 
                 json.dump(data, outfile)
 
+class cli(object):
+    def __init__(self):
+        self.flag = True
+        while self.run:
+            command = input("PySync: ")
+            if command == "h" or command == "help":
+                print("h, help - Show this help message")
+                print("x, exit - Exit PySync Agent")
+
+            elif command == "x" or command == "exit":
+                self.flag = False
+            
+        print("Exited While")
+    
+    def run(self):
+        pass
+
+
 if __name__ == "__main__":
+    
     try:
         #Create files.json if not exists
         if not os.path.exists("files.json"):
@@ -158,14 +179,19 @@ if __name__ == "__main__":
 
         print("Initializing monitoring threads")
         threadWatcher = threading.Thread(target=Watcher,args=())
+        threadWatcher.daemon = True
         threadWatcher.start()
         threadWatchFiles = threading.Thread(target=Watch_files,args=())
+        threadWatchFiles.daemon = True
         threadWatchFiles.start()
-
+        threadCLI = threading.Thread(target=cli,args=())
+        threadCLI.daemon = True
+        threadCLI.start()
         print("Running...")
 
+        while True:
+            pass
+
     except (KeyboardInterrupt, SystemExit):
-        threadWatcher.join()
-        threadWatchFiles.join()
         exit(0)
         print('Exiting')
