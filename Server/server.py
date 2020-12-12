@@ -47,7 +47,6 @@ def connectDatabase():
 def checkUser(databaseConnection, user, password, key):
     if databaseConnection:
         cursor = databaseConnection.cursor()
-        password = hashlib.md5(password.encode()).hexdigest()
         cursor.execute(f'SELECT * FROM Agents WHERE user="{user}" and password="{password}" and agentKey = "{key}"')
         register = cursor.fetchone()
         if register:
