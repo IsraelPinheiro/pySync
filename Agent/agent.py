@@ -189,7 +189,7 @@ def cli():
                     }
                 }
             }
-            awnser = proxy.gateway(message, None)
+            awnser, _  = proxy.gateway(message, None)
             if awnser["Status"] == 200:
                 print("Key registered")
             elif awnser["Status"] == 400:
@@ -213,7 +213,7 @@ def cli():
                     }
                 }
             }
-            awnser = proxy.gateway(message, None)
+            awnser, _ = proxy.gateway(message, None)
             if awnser["Status"] == 200:
                 print("Key registered")
             elif awnser["Status"] == 400:
