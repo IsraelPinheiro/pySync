@@ -129,7 +129,6 @@ def Watch_files():
             })
             if os.stat(file).st_mtime > data[file] and "dir_files" not in file and "agent" not in file:
                 time.sleep(0.2)
-                
                 message = {
                     "Action":"Delete",
                     "Timestamp":time.time(),
@@ -141,7 +140,6 @@ def Watch_files():
                         }
                     },
                     "File": file
-
                 }
 
                 awnser = proxy.gateway(message, None)
@@ -161,9 +159,9 @@ def cli():
             print("k, key - Show this agent key")
             print("lk, listkeys - List the keys registered for this user")
             print("nk, newkey - Register a new random Agent Key and set it as this agent default key")
-            print("nu, newuser - Register a new user and set it to use this agent default key")
+            print("rk, registerkey - Register a new key pair for this user")
+            print("ru, registeruser - Register a new user and set it to use this agent default key")
             print("sk, setkey - Set this agent default key manualy")
-            print("uk, userkey - Register a new key pair for this user")
             print("x, exit - Exit PySync Agent\n")
 
         elif command == "k" or command == "key":
@@ -179,9 +177,51 @@ def cli():
                 f.write(AGENT_KEY)
             print(f"Agent's key set to {AGENT_KEY}")
 
-        elif command == "nu" or command == "newuser":
-            #TODO: New user Command
-            pass
+        elif command == "rk" or command == "registerkey":
+            message = {
+                "Action":"RegisterAgent",
+                "Timestamp":time.time(),
+                "Agent":{
+                    "Key":AGENT_KEY,
+                    "User":{
+                        "Email":USERNAME,
+                        "Password":PASSWORD
+                    }
+                }
+            }
+            awnser = proxy.gateway(message, None)
+            if awnser["Status"] == 200:
+                print("Key registered")
+            elif awnser["Status"] == 400:
+                print("Bad Request")
+            elif awnser["Status"] == 500:
+                print("Internal Server Error")
+            else:
+                print("Internal Server Error")
+            
+        elif command == "ru" or command == "registeruser":
+            n_username = input("User name:")
+            n_password = input("User name:")
+            message = {
+                "Action":"RegisterAgent",
+                "Timestamp":time.time(),
+                "Agent":{
+                    "Key":AGENT_KEY,
+                    "User":{
+                        "Email":n_username,
+                        "Password":n_password
+                    }
+                }
+            }
+            awnser = proxy.gateway(message, None)
+            if awnser["Status"] == 200:
+                print("Key registered")
+            elif awnser["Status"] == 400:
+                print("Bad Request")
+            elif awnser["Status"] == 500:
+                print("Internal Server Error")
+            else:
+                print("Internal Server Error")
 
         elif command == "sk" or command == "setkey":
             newkey = input("New Key:")
@@ -194,9 +234,6 @@ def cli():
             
             else:
                 print("Invalid Key: The Agent Key must be a 32 characters string composed of only letters and numbers")
-                
-        elif command == "uk" or command == "userkey":
-            pass
 
         elif command == "x" or command == "exit":
             print('Exiting')
