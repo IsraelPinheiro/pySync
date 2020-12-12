@@ -100,7 +100,7 @@ def getChanges(message):
     return (message, None)
 
 def update(message, payload=None):
-    if checkUser(connectDatabase(), message["Agent"]["User"]["Email"],message["Agent"]["User"]["Password"],message["Agent"]["Key"]):
+    if checkUser(connectDatabase(), message["Agent"]["User"]["Email"], message["Agent"]["User"]["Password"], message["Agent"]["Key"]):
         if message["File"]:
             if os.path.isfile(message["File"]["OriginalName"]):
                 os.remove("./Files/"+message["File"]["OriginalName"])
@@ -134,7 +134,7 @@ def update(message, payload=None):
     return (message, None)
 
 def create(message, payload):
-    if checkUser(connectDatabase(), message["Agent"]["User"]["Email"],message["Agent"]["User"]["Password"],message["Agent"]["Key"]):
+    if checkUser(connectDatabase(), message["Agent"]["User"]["Email"], message["Agent"]["User"]["Password"], message["Agent"]["Key"]):
         if message["File"]:
             if not os.path.isfile(message["File"]["OriginalName"]):
                 with open("./Files/"+message["File"]["OriginalName"], "wb") as handle:
@@ -167,7 +167,7 @@ def create(message, payload):
     return (message, None)
 
 def delete(message):
-    if checkUser(connectDatabase(), message["Agent"]["User"]["Email"],message["Agent"]["User"]["Password"],message["Agent"]["Key"]):
+    if checkUser(connectDatabase(), message["Agent"]["User"]["Email"], message["Agent"]["User"]["Password"], message["Agent"]["Key"]):
         if message["File"]:
             if os.path.isfile("./Files/"+message["File"]["OriginalName"]):
                 os.remove("./Files/"+message["File"]["OriginalName"])
@@ -209,7 +209,7 @@ def registerUser(message):
                 conn = connectDatabase()
                 conn = sqlite3.connect("PySync.db")
                 cursor = conn.cursor()
-                cursor.execute("INSERT INTO main.Agents ('user', 'password', 'agentKey') VALUES ('{User}', '{password}', '{key}');")
+                cursor.execute(f"INSERT INTO main.Agents ('user', 'password', 'agentKey') VALUES ('{user}', '{password}', '{key}');")
                 conn.commit()
 
                 message = {
