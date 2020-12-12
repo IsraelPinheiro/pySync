@@ -238,6 +238,8 @@ def cli():
         elif command == "x" or command == "exit":
             print('Exiting')
             flagRun = False
+        else: 
+            print("Invalid input")
     
 if __name__ == "__main__":
     #Create files.json if not exists
