@@ -199,11 +199,50 @@ def delete(message):
 
     return (message, None)
 
-def registerAgent(message):
+def registerUser(message):
+    key = message["Agent"]["Key"]
+    user = message["Agent"]["User"]["Email"]
+    password = message["Agent"]["User"]["Password"]
+    if key:
+        if user and password:
+            try:
+                conn = connectDatabase()
+                conn = sqlite3.connect("PySync.db")
+                cursor = conn.cursor()
+                cursor.execute("INSERT INTO main.Agents ('user', 'password', 'agentKey') VALUES ('{User}', '{password}', '{key}');")
+                conn.commit()
+
+                message = {
+                    "Action":"ServerResponse",
+                    "Timestamp":time.time(),
+                    "Status":200
+                }
+
+            except Error as _:
+                message = {
+                    "Action":"ServerResponse",
+                    "Timestamp":time.time(),
+                    "Status":500
+                }
+            finally:
+                if conn:
+                    conn.close()
+        else:
+            message = {
+                "Action":"ServerResponse",
+                "Timestamp":time.time(),
+                "Status":400
+            }
+    else:
+        message = {
+            "Action":"ServerResponse",
+            "Timestamp":time.time(),
+            "Status":400
+        }
     return (message, None)
 
-def registerUser(message):
-    return (message, None)
+def registerAgent(message):
+    return registerUser(message)
 
 if __name__ == '__main__':
     try:
