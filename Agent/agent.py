@@ -3,6 +3,8 @@ from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 import time, os, json, threading, argparse, hashlib, sqlite3
 
+flagRun = True
+
 ################ Argparser ################
 parser = argparse.ArgumentParser()
 
@@ -22,7 +24,7 @@ if args.key:
 else:
     if os.path.isfile("agent.key"):
         with open("agent.key") as f:
-            AGENT_KEY = f.readline()
+            AGENT_KEY = str(f.readline())
     else:
         AGENT_KEY = hashlib.md5(str(time.time()).encode()).hexdigest().upper()
         with open("agent.key","w+") as f:
@@ -148,65 +150,63 @@ def Watch_files():
             with open("files.json", "w") as outfile: 
                 json.dump(data, outfile)
 
-class cli(object):
-    def __init__(self):
-        self.flag = True
-        while self.flag:
-            command = input("PySync: ")
-            if command == "h" or command == "help":
-                print("#### PySync Help ####")
-                print("h, help - Show this help message")
-                print("k, key - Show this agent key")
-                print("lk, listkeys - List the keys registered for this user")
-                print("nk, newkey - Register a new Agent Key and set it as this agent default key")
-                print("nu, newuser - Register a new user and set it to use this agent default key")
-                print("sk, setkey - Set this agent default key")
-                print("uk, userkey - Register a new key pair for this user")
-                print("x, exit - Exit PySync Agent\n")
+def cli():
+    global flagRun
+    global AGENT_KEY
+    while flagRun:
+        command = input("PySync: ")
+        if command == "h" or command == "help":
+            print("#### PySync Help ####")
+            print("h, help - Show this help message")
+            print("k, key - Show this agent key")
+            print("lk, listkeys - List the keys registered for this user")
+            print("nk, newkey - Register a new Agent Key and set it as this agent default key")
+            print("nu, newuser - Register a new user and set it to use this agent default key")
+            print("sk, setkey - Set this agent default key")
+            print("uk, userkey - Register a new key pair for this user")
+            print("x, exit - Exit PySync Agent\n")
 
-            elif command == "k" or command == "key":
-                print(f"This Agent's key is {AGENT_KEY}")
+        elif command == "k" or command == "key":
+            print(f"This Agent's key is {AGENT_KEY}")
 
-            elif command == "lk" or command == "listkeys":
-                pass
-            elif command == "nk" or command == "newkey":
-                pass
-            elif command == "nu" or command == "newuser":
-                pass
-            elif command == "sk" or command == "setkey":
-                command = input("New Key:")
-                
-
-            elif command == "uk" or command == "userkey":
-                pass
-            elif command == "x" or command == "exit":
-                self.flag = False
-    
-
-if __name__ == "__main__":
-    
-    try:
-        #Create files.json if not exists
-        if not os.path.exists("files.json"):
-            with open("files.json","w+") as f:
-                f.write("{}")
-
-        print("Connecting to remote server")
-        proxy = ServerProxy('http://localhost:3000', allow_none=True)
-
-        print("Initializing monitoring threads")
-        threadWatcher = threading.Thread(target=Watcher,args=(), daemon=True)
-        threadWatcher.start()
-        threadWatchFiles = threading.Thread(target=Watch_files,args=(), daemon=True)
-        threadWatchFiles.start()
-        print("Running...")
-
-        threadCLI = threading.Thread(target=cli,args=(), daemon=True)
-        threadCLI.start()
-
-        while True:
+        elif command == "lk" or command == "listkeys":
             pass
 
-    except (KeyboardInterrupt, SystemExit):
-        exit(0)
-        print('Exiting')
+        elif command == "nk" or command == "newkey":
+            AGENT_KEY = hashlib.md5(str(time.time()).encode()).hexdigest().upper()
+            with open("agent.key","w+") as f:
+                f.write(AGENT_KEY)
+            print(f"Agent's key set to {AGENT_KEY}")
+        elif command == "nu" or command == "newuser":
+            pass
+        elif command == "sk" or command == "setkey":
+            command = input("New Key:")
+            
+
+        elif command == "uk" or command == "userkey":
+            pass
+        elif command == "x" or command == "exit":
+            print('Exiting')
+            flagRun = False
+    
+if __name__ == "__main__":
+    #Create files.json if not exists
+    if not os.path.exists("files.json"):
+        with open("files.json","w+") as f:
+            f.write("{}")
+
+    print("Connecting to remote server")
+    proxy = ServerProxy('http://localhost:3000', allow_none=True)
+
+    print("Initializing monitoring threads")
+    threadWatcher = threading.Thread(target=Watcher,args=(), daemon=True)
+    threadWatcher.start()
+    threadWatchFiles = threading.Thread(target=Watch_files,args=(), daemon=True)
+    threadWatchFiles.start()
+    print("Running...")
+
+    threadCLI = threading.Thread(target=cli,args=(), daemon=True)
+    threadCLI.start()
+
+    while flagRun:
+        pass
