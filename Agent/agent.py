@@ -80,8 +80,8 @@ class EventHandler(FileSystemEventHandler):
         with open(event.src_path, "rb") as handle:
             payload = Binary(handle.read())
 
-        awnser = proxy.gateway(message, payload)
-        print(awnser)
+        answer = proxy.gateway(message, payload)
+        print(answer)
         
     def on_deleted(self, event):
         message = {
@@ -104,8 +104,8 @@ class EventHandler(FileSystemEventHandler):
         with open("files.json", "w") as outfile: 
             json.dump(data, outfile)
 
-        awnser = proxy.gateway(message, None)
-        print(awnser)
+        answer = proxy.gateway(message, None)
+        print(answer)
 
     def on_modified(self, event):
         pass
@@ -142,8 +142,8 @@ def Watch_files():
                     "File": file
                 }
 
-                awnser = proxy.gateway(message, None)
-                print(awnser)
+                answer = proxy.gateway(message, None)
+                print(answer)
 
             with open("files.json", "w") as outfile: 
                 json.dump(data, outfile)
@@ -189,12 +189,12 @@ def cli():
                     }
                 }
             }
-            awnser, _  = proxy.gateway(message, None)
-            if awnser["Status"] == 200:
+            answer, _  = proxy.gateway(message, None)
+            if answer["Status"] == 200:
                 print("Key registered")
-            elif awnser["Status"] == 400:
+            elif answer["Status"] == 400:
                 print("Bad Request")
-            elif awnser["Status"] == 500:
+            elif answer["Status"] == 500:
                 print("Internal Server Error")
             else:
                 print("Internal Server Error")
@@ -213,12 +213,12 @@ def cli():
                     }
                 }
             }
-            awnser, _ = proxy.gateway(message, None)
-            if awnser["Status"] == 200:
+            answer, _ = proxy.gateway(message, None)
+            if answer["Status"] == 200:
                 print("Key registered")
-            elif awnser["Status"] == 400:
+            elif answer["Status"] == 400:
                 print("Bad Request")
-            elif awnser["Status"] == 500:
+            elif answer["Status"] == 500:
                 print("Internal Server Error")
             else:
                 print("Internal Server Error")
