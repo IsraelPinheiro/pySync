@@ -1,7 +1,7 @@
 from xmlrpc.client import ServerProxy, Binary
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
-import time, os, json, threading, argparse, hashlib, sqlite3
+import time, os, json, threading, argparse, hashlib, sqlite3, re
 
 flagRun = True
 
@@ -160,9 +160,9 @@ def cli():
             print("h, help - Show this help message")
             print("k, key - Show this agent key")
             print("lk, listkeys - List the keys registered for this user")
-            print("nk, newkey - Register a new Agent Key and set it as this agent default key")
+            print("nk, newkey - Register a new random Agent Key and set it as this agent default key")
             print("nu, newuser - Register a new user and set it to use this agent default key")
-            print("sk, setkey - Set this agent default key")
+            print("sk, setkey - Set this agent default key manualy")
             print("uk, userkey - Register a new key pair for this user")
             print("x, exit - Exit PySync Agent\n")
 
@@ -170,6 +170,7 @@ def cli():
             print(f"This Agent's key is {AGENT_KEY}")
 
         elif command == "lk" or command == "listkeys":
+            #TODO: List keys Command
             pass
 
         elif command == "nk" or command == "newkey":
@@ -177,14 +178,26 @@ def cli():
             with open("agent.key","w+") as f:
                 f.write(AGENT_KEY)
             print(f"Agent's key set to {AGENT_KEY}")
-        elif command == "nu" or command == "newuser":
-            pass
-        elif command == "sk" or command == "setkey":
-            command = input("New Key:")
-            
 
+        elif command == "nu" or command == "newuser":
+            #TODO: New user Command
+            pass
+
+        elif command == "sk" or command == "setkey":
+            newkey = input("New Key:")
+            newkey = re.sub(r"[\W_]+", '', newkey).upper()
+            if len(newkey) == 32:
+                AGENT_KEY = newkey
+                with open("agent.key","w+") as f:
+                    f.write(AGENT_KEY)
+                print(f"Agent's key set to {AGENT_KEY}")
+            
+            else:
+                print("Invalid Key: The Agent Key must be a 32 characters string composed of only letters and numbers")
+                
         elif command == "uk" or command == "userkey":
             pass
+
         elif command == "x" or command == "exit":
             print('Exiting')
             flagRun = False
