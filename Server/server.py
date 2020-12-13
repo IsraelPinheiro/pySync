@@ -8,6 +8,7 @@ server = SimpleXMLRPCServer(("",3000), logRequests=True, allow_none=True)
 
 ################ SQLite Connection and management #####################
 def createDatabase():
+    print("Database not found. Recreating...")
     try:
         conn = sqlite3.connect("PySync.db")
         cursor = conn.cursor()
@@ -25,6 +26,7 @@ def createDatabase():
                 "id" integer,
                 "action" varchar NOT NULL,
                 "file" varchar NOT NULL,
+                "agentKey"	varchar(32),
                 "timestamp" timestamp NOT NULL,
                 PRIMARY KEY("id")
             );
@@ -32,7 +34,7 @@ def createDatabase():
         cursor.execute("""
             CREATE TABLE SyncRequests(
                 "id" integer,
-                "agent" varchar(32) NOT NULL,
+                "agentKey" varchar(32) NOT NULL,
                 "timestamp" timestamp NOT NULL,
                 PRIMARY KEY("id")
             );
@@ -77,11 +79,11 @@ def checkUser(databaseConnection, user, password, key):
     else:
         return False
 
-def logActions(action, file, timestamp):
+def logActions(action, file, agentKey, timestamp):
     try:
         conn = connectDatabase()
         cursor = conn.cursor()
-        cursor.execute(f"INSERT INTO main.Logs ('action', 'file', 'timestamp') VALUES ('{action}', '{file}', '{timestamp}');")
+        cursor.execute(f"INSERT INTO main.Logs ('action', 'file', 'agentKey' ,'timestamp') VALUES ('{action}', '{file}', {agentKey}, '{timestamp}');")
         conn.commit()
         pass
     except Error as e:
@@ -90,11 +92,11 @@ def logActions(action, file, timestamp):
         if conn:
             conn.close()
 
-def logSyncRequest(agent, timestamp):
+def logSyncRequest(agentKey, timestamp):
     try:
         conn = connectDatabase()
         cursor = conn.cursor()
-        cursor.execute(f"INSERT INTO main.SyncRequests ('agent', 'timestamp') VALUES ('{agent}', '{timestamp}');")
+        cursor.execute(f"INSERT INTO main.SyncRequests ('agentKey', 'timestamp') VALUES ('{agentKey}', '{timestamp}');")
         
         conn.commit()
         pass
@@ -104,6 +106,31 @@ def logSyncRequest(agent, timestamp):
         if conn:
             conn.close()
 
+def getChanges(agentKey):
+    lastRequest = None
+    newFiles = None
+    updatedFiles = None
+    deletedFiles = None
+    conn = connectDatabase()
+    try:
+        cursor = conn.cursor()
+        cursor.execute(f"SELECT timestamp FROM SyncRequests WHERE agentKey='{agentKey}' ORDER BY DESC id")
+        lastRequest = cursor.fetchone()
+
+        cursor.execute(f"SELECT * FROM Logs WHERE action = 'Create' AND NOT agentKey='{agentKey}' AND timestamp>={lastRequest};")
+        newFiles = cursor.fetchall()
+
+        cursor.execute(f"SELECT * FROM Logs WHERE action = 'Update' AND NOT agentKey='{agentKey}' AND timestamp>={lastRequest};")
+        updatedFiles = cursor.fetchall()
+
+        cursor.execute(f"SELECT * FROM Logs WHERE action = 'Delete' AND NOT agentKey='{agentKey}' AND timestamp>={lastRequest};")
+        deletedFiles = cursor.fetchall()
+    except Error as e:
+        print(e)
+    finally:
+        if conn:
+            conn.close()
+    return (newFiles, updatedFiles, deletedFiles)
 #######################################################################
 
 class Worker(object):
@@ -139,9 +166,6 @@ def gateway(message, payload):
         response = message
 
     return response
-
-def getChanges(message):
-    return (message, None)
 
 def update(message, payload=None):
     if checkUser(connectDatabase(), message["Agent"]["User"]["Email"], message["Agent"]["User"]["Password"], message["Agent"]["Key"]):
@@ -290,6 +314,9 @@ def registerAgent(message):
 
 if __name__ == '__main__':
     try:
+        if not os.path.isfile("PySync.db"):
+            createDatabase()
+
         server.register_function(gateway)
         print('Serving...')
         server.serve_forever()
