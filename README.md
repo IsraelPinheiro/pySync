@@ -56,17 +56,20 @@ The following diagram abstracts the communication flow between the Agent and the
 
 ## Message Transfer Protocol
 
-### Register User
+### Register Agent
 
 - Client Request
 
 ```jsonc
 {
-  "Action": "RegisterUser",
+  "Action": "RegisterAgent",
   "Timestamp": 1604061231.0383,
-  "User": {
-    "Email": "usuario01@pysync.com",
-    "Password": "minhasenhasuperdificil"
+  "Agent": {
+    "Key": "6C19A781148814833ED25840B7A07BA7",
+    "User": {
+      "Email": "usuario01@pysync.com",
+      "Password": "D1A5FF8DBEEDAA3406368724EBBD3CB0" //Password MD5 Hash
+    }
   }
 }
 ```
@@ -87,20 +90,20 @@ The following diagram abstracts the communication flow between the Agent and the
 {
   "Action": "ServerResponse",
   "Timestamp": 1604061231.0383,
-  "Status": 403
+  "Status": 500
 }
 ```
 
-### Register Agent
+### Register User
 
 - Client Request
 
 ```jsonc
 {
-  "Action": "RegisterAgent",
+  "Action": "RegisterUser",
   "Timestamp": 1604061231.0383,
   "Agent": {
-    "Name": "PC Casa",
+    "Key": "6C19A781148814833ED25840B7A07BA7",
     "User": {
       "Email": "usuario01@pysync.com",
       "Password": "D1A5FF8DBEEDAA3406368724EBBD3CB0" //Password MD5 Hash
@@ -113,15 +116,19 @@ The following diagram abstracts the communication flow between the Agent and the
 
 ```jsonc
 {
-    "Action":"ServerResponse",
-    "Timestamp":1604061231.0383,
-    "Status":200 //OK - Agent Registered
-}
-
+  "Action": "ServerResponse",
+  "Timestamp": 1604061231.0383,
+  "Status": 200
+},
 {
-    "Action":"ServerResponse",
-    "Timestamp":1604061231.0383,
-    "Status":400 //Bad Request - Outside the expected format for the type of action
+  "Action": "ServerResponse",
+  "Timestamp": 1604061231.0383,
+  "Status": 400
+},
+{
+  "Action": "ServerResponse",
+  "Timestamp": 1604061231.0383,
+  "Status": 500
 }
 ```
 
