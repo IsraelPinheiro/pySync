@@ -18,7 +18,7 @@ def createDatabase():
                 "user"	varchar NOT NULL,
                 "password"	varchar(32),
                 "agentKey"	varchar(32),
-                PRIMARY KEY("id")
+                PRIMARY KEY("id" AUTOINCREMENT)
             );
         """)
         cursor.execute("""
@@ -28,7 +28,7 @@ def createDatabase():
                 "file" varchar NOT NULL,
                 "agentKey"	varchar(32),
                 "timestamp" timestamp NOT NULL,
-                PRIMARY KEY("id")
+                PRIMARY KEY("id" AUTOINCREMENT)
             );
         """)
         cursor.execute("""
@@ -36,7 +36,7 @@ def createDatabase():
                 "id" integer,
                 "agentKey" varchar(32) NOT NULL,
                 "timestamp" timestamp NOT NULL,
-                PRIMARY KEY("id")
+                PRIMARY KEY("id" AUTOINCREMENT)
             );
         """)
         #Create Default User
@@ -114,23 +114,35 @@ def getChanges(agentKey):
     conn = connectDatabase()
     try:
         cursor = conn.cursor()
-        cursor.execute(f"SELECT timestamp FROM SyncRequests WHERE agentKey='{agentKey}' ORDER BY DESC id")
-        lastRequest = cursor.fetchone()
+        cursor.execute(f"SELECT timestamp FROM SyncRequests WHERE agentKey='{agentKey}' ORDER BY id DESC")
+        lastRequest = cursor.fetchone()[0]
 
-        cursor.execute(f"SELECT * FROM Logs WHERE action = 'Create' AND NOT agentKey='{agentKey}' AND timestamp>={lastRequest};")
+        if lastRequest:
+            cursor.execute(f"SELECT * FROM Logs WHERE action = 'Create' AND NOT agentKey='{agentKey}' AND timestamp>={lastRequest};")
+        else:
+            cursor.execute(f"SELECT * FROM Logs WHERE action = 'Create';")
         newFiles = cursor.fetchall()
 
-        cursor.execute(f"SELECT * FROM Logs WHERE action = 'Update' AND NOT agentKey='{agentKey}' AND timestamp>={lastRequest};")
+        if lastRequest:
+            cursor.execute(f"SELECT * FROM Logs WHERE action = 'Update' AND NOT agentKey='{agentKey}' AND timestamp>={lastRequest};")
+        else:
+            cursor.execute(f"SELECT * FROM Logs WHERE action = 'Update';")
         updatedFiles = cursor.fetchall()
 
-        cursor.execute(f"SELECT * FROM Logs WHERE action = 'Delete' AND NOT agentKey='{agentKey}' AND timestamp>={lastRequest};")
+        if lastRequest:
+            cursor.execute(f"SELECT * FROM Logs WHERE action = 'Delete' AND NOT agentKey='{agentKey}' AND timestamp>={lastRequest};")
+        else:
+            cursor.execute(f"SELECT * FROM Logs WHERE action = 'Delete';")
         deletedFiles = cursor.fetchall()
+        
     except Error as e:
         print(e)
     finally:
         if conn:
             conn.close()
     return (newFiles, updatedFiles, deletedFiles)
+    
+
 #######################################################################
 
 class Worker(object):
@@ -317,6 +329,7 @@ if __name__ == '__main__':
         if not os.path.isfile("PySync.db"):
             createDatabase()
 
+        print(getChanges("5EE53A0D21960A1918E3CFC9F1D9356A"))
         server.register_function(gateway)
         print('Serving...')
         server.serve_forever()
