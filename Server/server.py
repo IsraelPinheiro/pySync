@@ -12,7 +12,7 @@ def createDatabase():
         conn = sqlite3.connect("PySync.db")
         cursor = conn.cursor()
         cursor.execute("""
-            CREATE TABLE "Agents" (
+            CREATE TABLE Agents(
                 "id" integer,
                 "user"	varchar NOT NULL,
                 "password"	varchar(32),
@@ -20,6 +20,24 @@ def createDatabase():
                 PRIMARY KEY("id")
             );
         """)
+        cursor.execute("""
+            CREATE TABLE Logs(
+                "id" integer,
+                "action" varchar NOT NULL,
+                "file" varchar NOT NULL,
+                "timestamp" timestamp NOT NULL,
+                PRIMARY KEY("id")
+            );
+        """)
+        cursor.execute("""
+            CREATE TABLE SyncRequests(
+                "id" integer,
+                "agent" varchar(32) NOT NULL,
+                "timestamp" timestamp NOT NULL,
+                PRIMARY KEY("id")
+            );
+        """)
+        #Create Default User
         cursor.execute("""
             INSERT INTO main.Agents ("user", "password", "agentKey")
                 VALUES ('User', '5F4DCC3B5AA765D61D8327DEB882CF99', '5EE53A0D21960A1918E3CFC9F1D9356A');
