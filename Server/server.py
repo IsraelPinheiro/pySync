@@ -77,6 +77,33 @@ def checkUser(databaseConnection, user, password, key):
     else:
         return False
 
+def logActions(action, file, timestamp):
+    try:
+        conn = connectDatabase()
+        cursor = conn.cursor()
+        cursor.execute(f"INSERT INTO main.Logs ('action', 'file', 'timestamp') VALUES ('{action}', '{file}', '{timestamp}');")
+        conn.commit()
+        pass
+    except Error as e:
+        print(e)
+    finally:
+        if conn:
+            conn.close()
+
+def logSyncRequest(agent, timestamp):
+    try:
+        conn = connectDatabase()
+        cursor = conn.cursor()
+        cursor.execute(f"INSERT INTO main.SyncRequests ('agent', 'timestamp') VALUES ('{agent}', '{timestamp}');")
+        
+        conn.commit()
+        pass
+    except Error as e:
+        print(e)
+    finally:
+        if conn:
+            conn.close()
+
 #######################################################################
 
 class Worker(object):
