@@ -33,26 +33,18 @@ PySync Agent has a watchdog that monitors all file system events, as even a modi
 
 ## PySync Server
 
-On the server side, all messages sent by the client are received by a gateway, which segments the messages according to the type of action of the received message. If it is a creation of a new file, the server will store the information of the file and the Agent that sent it in the database and will store the sent file in a local folder. Similarly, when there is a file deletion event, the server will remove this information from the database and delete the file from the local folder.
+On the server side, all messages sent by the client are received by a gateway, which segments the messages according to the type of action sent by the client.For example, if it is the creation of a file, the server stores the file data in the local storage and than inserts this ocurrence on the database for future reference. Similarly, when there is a file deletion event, the server will remove this file from it's local storage and register the event on the database.
 
 ## What is missing and improvement points
 
-<ul>
-    <li>
-        To date PySync does not have an authentication system that guarantees unique identification of each Agent.
-    </li>
-    <li>
-        Multiple Agent synchronization functionality is not yet implemented
-    </li>
-    <li>
-        Synchronization of files with new Agents not yet implemented
-    </li>
-</ul>
+- To date PySync does not have an authentication system that guarantees unique identification of each Agent.
+- Multiple Agent synchronization functionality is not yet implemented
+- Synchronization of files with new Agents not yet implemented
 
 ## PySync Diagram
 
 The following diagram abstracts the communication flow between the Agent and the Server:
-<img src="./Diagrama.png" alt="PySync Diagram"><br>
+![Image of Yaktocat](./Diagrama.png)
 
 ## Message Transfer Protocol
 
