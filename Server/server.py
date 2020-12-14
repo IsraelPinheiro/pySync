@@ -115,7 +115,9 @@ def getChanges(agentKey):
     try:
         cursor = conn.cursor()
         cursor.execute(f"SELECT timestamp FROM SyncRequests WHERE agentKey='{agentKey}' ORDER BY id DESC")
-        lastRequest = cursor.fetchone()[0]
+        lastRequest = cursor.fetchone()
+        if lastRequest:
+            lastRequest = lastRequest[0]
 
         if lastRequest:
             cursor.execute(f"SELECT * FROM Logs WHERE action = 'Create' AND NOT agentKey='{agentKey}' AND timestamp>={lastRequest};")
@@ -141,8 +143,6 @@ def getChanges(agentKey):
         if conn:
             conn.close()
     return (newFiles, updatedFiles, deletedFiles)
-    
-
 #######################################################################
 
 class Worker(object):
@@ -328,8 +328,7 @@ if __name__ == '__main__':
     try:
         if not os.path.isfile("PySync.db"):
             createDatabase()
-
-        print(getChanges("5EE53A0D21960A1918E3CFC9F1D9356A"))
+            
         server.register_function(gateway)
         print('Serving...')
         server.serve_forever()
