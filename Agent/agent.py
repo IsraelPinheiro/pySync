@@ -118,7 +118,7 @@ class EventHandler(FileSystemEventHandler):
 
 class GetChanges():
     def run(self):
-        threading.Timer(5.0, getChanges).start()
+        threading.Timer(5.0, self.run).start()
 
         message = {
             "Action":"GetChanges",
