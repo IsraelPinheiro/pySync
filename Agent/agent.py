@@ -55,7 +55,7 @@ class Watcher(object):
 
 class EventHandler(FileSystemEventHandler):
     def on_any_event(self, event):
-        print("triggered")
+        # print("triggered")
         self.snapshot()
 
     def on_created(self, event):
@@ -74,7 +74,6 @@ class EventHandler(FileSystemEventHandler):
                 "OriginalName": os.path.basename(event.src_path),
                 "Size": os.path.getsize(event.src_path)
             }
-
         }
 
         with open(event.src_path, "rb") as handle:
@@ -94,8 +93,9 @@ class EventHandler(FileSystemEventHandler):
                     "Password":PASSWORD
                 }
             },
-            "File": os.path.basename(event.src_path)
-
+            "File": {
+                "OriginalName": os.path.basename(event.src_path)
+            }
         }
 
         with open("files.json", "r") as openfile:
@@ -115,6 +115,60 @@ class EventHandler(FileSystemEventHandler):
 
     def snapshot(self):
         pass
+
+class GetChanges():
+    def run(self):
+        timer = threading.Timer(5.0, self.run)
+        timer.daemon = True
+        timer.start()
+
+        message = {
+            "Action":"GetChanges",
+            "Timestamp":time.time(),
+            "Agent":{
+                "Key":AGENT_KEY,
+                "User":{
+                    "Email":USERNAME,
+                    "Password":PASSWORD
+                }
+            }
+        }
+
+        try:
+            newFiles, updatedFiles, deletedFiles = proxy.gateway(message, None)
+
+            self.createFiles(newFiles)
+            self.updateFiles(updatedFiles)
+            self.deleteFiles(deletedFiles)
+        except Exception as e:
+            print(f"Error getting changes: {e}")
+
+
+    def createFiles(self, files):
+        for file in files:
+            path = FILES_PATH + file[2]
+            if (not os.path.isfile(path)):
+                print(f"\nCreating file: {file[2]}")
+                with open(path, "wb") as handle:
+                    payload = file[5]
+                    handle.write(payload.data)
+
+    def updateFiles(self, files):
+        for file in files:
+            path = FILES_PATH + file[2]
+            if (os.path.isfile(path)):
+                print(f"\nUpdating file: {file[2]}")
+                os.remove(path)
+                with open(path, "wb") as handle:
+                    payload = file[5]
+                    handle.write(payload.data)
+
+    def deleteFiles(self, files):
+        for file in files:
+            path = FILES_PATH + file[2]
+            if (os.path.isfile(path)):
+                print(f"\nDeleting file: {file[2]}")
+                os.remove(path)
 
 def Watch_files():
     with open("files.json", "r") as openfile:
@@ -240,7 +294,7 @@ def cli():
             flagRun = False
         else: 
             print("Invalid input")
-    
+
 if __name__ == "__main__":
     #Create files.json if not exists
     if not os.path.exists("files.json"):
@@ -253,12 +307,16 @@ if __name__ == "__main__":
     print("Initializing monitoring threads")
     threadWatcher = threading.Thread(target=Watcher,args=(), daemon=True)
     threadWatcher.start()
+
     threadWatchFiles = threading.Thread(target=Watch_files,args=(), daemon=True)
     threadWatchFiles.start()
+
     print("Running...")
 
     threadCLI = threading.Thread(target=cli,args=(), daemon=True)
     threadCLI.start()
+
+    GetChanges().run()
 
     while flagRun:
         pass

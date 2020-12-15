@@ -1,4 +1,5 @@
 from xmlrpc.server import SimpleXMLRPCServer
+from xmlrpc.client import Binary
 from threading import Thread
 import sqlite3
 from sqlite3 import Error
@@ -79,11 +80,11 @@ def checkUser(databaseConnection, user, password, key):
     else:
         return False
 
-def logActions(action, file, agentKey, timestamp):
+def logActions(action, agentKey, timestamp, file = ""):
     try:
         conn = connectDatabase()
         cursor = conn.cursor()
-        cursor.execute(f"INSERT INTO main.Logs ('action', 'file', 'agentKey' ,'timestamp') VALUES ('{action}', '{file}', {agentKey}, '{timestamp}');")
+        cursor.execute(f"INSERT INTO main.Logs ('action', 'file', 'agentKey' ,'timestamp') VALUES ('{action}', '{file}', '{agentKey}', '{timestamp}');")
         conn.commit()
         pass
     except Error as e:
@@ -106,7 +107,10 @@ def logSyncRequest(agentKey, timestamp):
         if conn:
             conn.close()
 
-def getChanges(agentKey):
+def getChanges(message):
+    agentKey = message["Agent"]["Key"]
+    timestamp = message["Timestamp"]
+
     lastRequest = None
     newFiles = None
     updatedFiles = None
@@ -136,19 +140,34 @@ def getChanges(agentKey):
         else:
             cursor.execute(f"SELECT * FROM Logs WHERE action = 'Delete';")
         deletedFiles = cursor.fetchall()
-        
+
+        newFiles = getFilesBinary(newFiles)
+        updatedFiles = getFilesBinary(updatedFiles)
     except Error as e:
         print(e)
     finally:
         if conn:
             conn.close()
+
+    logSyncRequest(agentKey, timestamp)
     return (newFiles, updatedFiles, deletedFiles)
+
+def getFilesBinary (files):
+    newFiles = []
+    for file in files:
+        with open("./Files/" + file[2], "rb") as handle:
+            newFiles.append((*file, Binary(handle.read())))
+
+    return newFiles
 #######################################################################
 
 class Worker(object):
     pass
 
 def gateway(message, payload):
+    file = message.get("File", {}).get("OriginalName", '')
+    logActions(message["Action"], message["Agent"]["Key"], message["Timestamp"], file)
+
     action = message["Action"]
     if action=="GetChanges":
         return getChanges(message)
