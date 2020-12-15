@@ -242,6 +242,23 @@ def cli():
         else: 
             print("Invalid input")
 
+def getChanges():
+    threading.Timer(5.0, getChanges).start()
+
+    message = {
+        "Action":"GetChanges",
+        "Timestamp":time.time(),
+        "Agent":{
+            "Key":AGENT_KEY,
+            "User":{
+                "Email":USERNAME,
+                "Password":PASSWORD
+            }
+        }
+    }
+    answer = proxy.gateway(message, None)
+    print(f"changes: {answer}")
+
 if __name__ == "__main__":
     #Create files.json if not exists
     if not os.path.exists("files.json"):
@@ -262,6 +279,8 @@ if __name__ == "__main__":
 
     threadCLI = threading.Thread(target=cli,args=(), daemon=True)
     threadCLI.start()
+
+    getChanges()
 
     while flagRun:
         pass
