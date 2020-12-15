@@ -118,7 +118,9 @@ class EventHandler(FileSystemEventHandler):
 
 class GetChanges():
     def run(self):
-        threading.Timer(5.0, self.run).start()
+        timer = threading.Timer(5.0, self.run)
+        timer.daemon = True
+        timer.start()
 
         message = {
             "Action":"GetChanges",
@@ -132,16 +134,21 @@ class GetChanges():
             }
         }
 
-        newFiles, updatedFiles, deletedFiles = proxy.gateway(message, None)
+        try:
+            newFiles, updatedFiles, deletedFiles = proxy.gateway(message, None)
 
-        self.createFiles(newFiles)
-        self.updateFiles(updatedFiles)
-        self.deleteFiles(deletedFiles)
+            self.createFiles(newFiles)
+            self.updateFiles(updatedFiles)
+            self.deleteFiles(deletedFiles)
+        except Exception as e:
+            print(f"Error getting changes: {e}")
+
 
     def createFiles(self, files):
         for file in files:
             path = FILES_PATH + file[2]
             if (not os.path.isfile(path)):
+                print(f"\nCreating file: {file[2]}")
                 with open(path, "wb") as handle:
                     payload = file[5]
                     handle.write(payload.data)
@@ -150,6 +157,7 @@ class GetChanges():
         for file in files:
             path = FILES_PATH + file[2]
             if (os.path.isfile(path)):
+                print(f"\nUpdating file: {file[2]}")
                 os.remove(path)
                 with open(path, "wb") as handle:
                     payload = file[5]
@@ -159,6 +167,7 @@ class GetChanges():
         for file in files:
             path = FILES_PATH + file[2]
             if (os.path.isfile(path)):
+                print(f"\nDeleting file: {file[2]}")
                 os.remove(path)
 
 def Watch_files():
