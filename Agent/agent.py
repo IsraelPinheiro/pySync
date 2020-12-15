@@ -117,10 +117,11 @@ class EventHandler(FileSystemEventHandler):
         pass
 
 class GetChanges():
+    def __init__(self, interval = 5):
+        self.interval = interval
+
     def run(self):
-        timer = threading.Timer(5.0, self.run)
-        timer.daemon = True
-        timer.start()
+        time.sleep(self.interval)
 
         message = {
             "Action":"GetChanges",
@@ -311,12 +312,13 @@ if __name__ == "__main__":
     threadWatchFiles = threading.Thread(target=Watch_files,args=(), daemon=True)
     threadWatchFiles.start()
 
+    threadGetChanges = threading.Thread(target=GetChanges().run,args=(), daemon=True)
+    threadGetChanges.start()
+
     print("Running...")
 
     threadCLI = threading.Thread(target=cli,args=(), daemon=True)
     threadCLI.start()
-
-    GetChanges().run()
 
     while flagRun:
         pass
