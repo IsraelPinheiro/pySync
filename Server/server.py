@@ -106,7 +106,9 @@ def logSyncRequest(agentKey, timestamp):
         if conn:
             conn.close()
 
-def getChanges(agentKey):
+def getChanges(message):
+    agentKey = message["Agent"]["Key"]
+
     lastRequest = None
     newFiles = None
     updatedFiles = None
