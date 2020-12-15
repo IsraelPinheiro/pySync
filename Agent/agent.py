@@ -176,13 +176,13 @@ def Watch_files():
         data = json.load(openfile)
     while True:
         time.sleep(1)
-        dir_files = dict ([(f, None) for f in os.listdir()])
+        dir_files = dict ([(f, None) for f in os.listdir(FILES_PATH)])
 
         for file in dir_files:
             data.update({
-                file: os.stat(file).st_mtime
+                file: os.stat(f"{FILES_PATH}/{file}").st_mtime
             })
-            if os.stat(file).st_mtime > data[file] and "dir_files" not in file and "agent" not in file:
+            if os.stat(f"{FILES_PATH}/{file}").st_mtime > data[file] and "dir_files" not in file and "agent" not in file:
                 time.sleep(0.2)
                 message = {
                     "Action":"Delete",
