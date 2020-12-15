@@ -149,6 +149,8 @@ class Worker(object):
     pass
 
 def gateway(message, payload):
+    logActions(message["Action"], message["Agent"]["Key"], message["Timestamp"], message.get("File"))
+
     action = message["Action"]
     if action=="GetChanges":
         return getChanges(message)
