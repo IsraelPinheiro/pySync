@@ -74,7 +74,6 @@ class EventHandler(FileSystemEventHandler):
                 "OriginalName": os.path.basename(event.src_path),
                 "Size": os.path.getsize(event.src_path)
             }
-
         }
 
         with open(event.src_path, "rb") as handle:
@@ -116,6 +115,51 @@ class EventHandler(FileSystemEventHandler):
 
     def snapshot(self):
         pass
+
+class GetChanges():
+    def run(self):
+        threading.Timer(5.0, getChanges).start()
+
+        message = {
+            "Action":"GetChanges",
+            "Timestamp":time.time(),
+            "Agent":{
+                "Key":AGENT_KEY,
+                "User":{
+                    "Email":USERNAME,
+                    "Password":PASSWORD
+                }
+            }
+        }
+
+        newFiles, updatedFiles, deletedFiles = proxy.gateway(message, None)
+
+        self.createFiles(newFiles)
+        self.updateFiles(updatedFiles)
+        self.deleteFiles(deletedFiles)
+
+    def createFiles(self, files):
+        for file in files:
+            path = FILES_PATH + file[2]
+            if (not os.path.isfile(path)):
+                with open(path, "wb") as handle:
+                    payload = file[5]
+                    handle.write(payload.data)
+
+    def updateFiles(self, files):
+        for file in files:
+            path = FILES_PATH + file[2]
+            if (os.path.isfile(path)):
+                os.remove(path)
+                with open(path, "wb") as handle:
+                    payload = file[5]
+                    handle.write(payload.data)
+
+    def deleteFiles(self, files):
+        for file in files:
+            path = FILES_PATH + file[2]
+            if (os.path.isfile(path)):
+                os.remove(path)
 
 def Watch_files():
     with open("files.json", "r") as openfile:
@@ -242,23 +286,6 @@ def cli():
         else: 
             print("Invalid input")
 
-def getChanges():
-    threading.Timer(5.0, getChanges).start()
-
-    message = {
-        "Action":"GetChanges",
-        "Timestamp":time.time(),
-        "Agent":{
-            "Key":AGENT_KEY,
-            "User":{
-                "Email":USERNAME,
-                "Password":PASSWORD
-            }
-        }
-    }
-    answer = proxy.gateway(message, None)
-    print(f"changes: {answer}")
-
 if __name__ == "__main__":
     #Create files.json if not exists
     if not os.path.exists("files.json"):
@@ -280,7 +307,7 @@ if __name__ == "__main__":
     threadCLI = threading.Thread(target=cli,args=(), daemon=True)
     threadCLI.start()
 
-    getChanges()
+    GetChanges().run()
 
     while flagRun:
         pass
