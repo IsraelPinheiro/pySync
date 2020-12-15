@@ -11,7 +11,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("username", help="Your Username", type=str)
 parser.add_argument("password", help="User Password", type=str)
 parser.add_argument("--key", help="Agent Key", type=str)
-parser.add_argument("--folder", help="Folder to watch", type=str, default="Files")
+parser.add_argument("--folder", help="Folder to watch", type=str, default=os.getcwd())
 args = parser.parse_args()
 
 # Set default username and password to use
@@ -177,6 +177,7 @@ def Watch_files():
     while True:
         time.sleep(1)
         dir_files = dict ([(f, None) for f in os.listdir(FILES_PATH)])
+        dir_files.pop('files.json')
 
         for file in dir_files:
             data.update({
