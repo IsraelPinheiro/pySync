@@ -79,11 +79,11 @@ def checkUser(databaseConnection, user, password, key):
     else:
         return False
 
-def logActions(action, file, agentKey, timestamp):
+def logActions(action, agentKey, timestamp, file = ""):
     try:
         conn = connectDatabase()
         cursor = conn.cursor()
-        cursor.execute(f"INSERT INTO main.Logs ('action', 'file', 'agentKey' ,'timestamp') VALUES ('{action}', '{file}', {agentKey}, '{timestamp}');")
+        cursor.execute(f"INSERT INTO main.Logs ('action', 'file', 'agentKey' ,'timestamp') VALUES ('{action}', '{file}', '{agentKey}', '{timestamp}');")
         conn.commit()
         pass
     except Error as e:
