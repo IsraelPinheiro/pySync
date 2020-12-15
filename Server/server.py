@@ -1,4 +1,5 @@
 from xmlrpc.server import SimpleXMLRPCServer
+from xmlrpc.client import Binary
 from threading import Thread
 import sqlite3
 from sqlite3 import Error
@@ -139,7 +140,9 @@ def getChanges(message):
         else:
             cursor.execute(f"SELECT * FROM Logs WHERE action = 'Delete';")
         deletedFiles = cursor.fetchall()
-        
+
+        newFiles = getFilesBinary(newFiles)
+        updatedFiles = getFilesBinary(updatedFiles)
     except Error as e:
         print(e)
     finally:
@@ -148,6 +151,14 @@ def getChanges(message):
 
     logSyncRequest(agentKey, timestamp)
     return (newFiles, updatedFiles, deletedFiles)
+
+def getFilesBinary (files):
+    newFiles = []
+    for file in files:
+        with open("./Files/" + file[2], "rb") as handle:
+            newFiles.append((*file, Binary(handle.read())))
+
+    return newFiles
 #######################################################################
 
 class Worker(object):
